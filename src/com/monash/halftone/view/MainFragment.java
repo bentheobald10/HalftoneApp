@@ -1,4 +1,7 @@
-package com.monash.halftone;
+package com.monash.halftone.view;
+
+import com.monash.halftone.R;
+import com.monash.halftone.R.layout;
 
 import android.app.Fragment;
 import android.os.Bundle;
