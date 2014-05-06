@@ -1,16 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.monash.halftone.MainActivity$PlaceholderFragment" >
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/main_select" />
+    
+    <LinearLayout 
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="5">
+        
+	    <Button 
+	        android:id="@+id/bPhoto"
+	        android:text="Take Photo"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="2"/>
+	    
+	    <Button 
+	        android:id="@+id/bGallery"
+	        android:text="Choose from gallery"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="2"
+	        android:layout_gravity="bottom"/>
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

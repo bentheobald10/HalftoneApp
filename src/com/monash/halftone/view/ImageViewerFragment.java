@@ -24,7 +24,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener{
 		// TODO Add details
 		return view;
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
