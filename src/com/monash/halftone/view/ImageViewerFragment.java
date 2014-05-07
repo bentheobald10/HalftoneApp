@@ -1,7 +1,11 @@
 package com.monash.halftone.view;
 
+import java.net.URI;
+
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +27,11 @@ public class ImageViewerFragment extends Fragment implements OnClickListener{
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
 
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
+		
+		URI file = (URI) getActivity().getIntent().getExtras().get("image");
+		Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), file);
+		ivMain.setImageBitmap(bitmap);
+		
 		return view;
 	}
 	
