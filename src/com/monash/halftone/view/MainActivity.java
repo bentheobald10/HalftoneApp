@@ -1,10 +1,6 @@
 package com.monash.halftone.view;
 
 import com.monash.halftone.R;
-import com.monash.halftone.R.id;
-import com.monash.halftone.R.layout;
-import com.monash.halftone.R.menu;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
