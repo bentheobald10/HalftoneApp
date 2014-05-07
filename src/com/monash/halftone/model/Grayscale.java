@@ -1,5 +1,8 @@
 package com.monash.halftone.model;
 
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+
 public class Grayscale extends FilteredImage {
 
 	public Grayscale(){
@@ -8,7 +11,10 @@ public class Grayscale extends FilteredImage {
 	
 	@Override
 	protected void convert() {
-		// TODO Auto-generated method stub
+		ColorMatrix matrix = new ColorMatrix();
+	    matrix.setSaturation(0);
+	    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+	    
 		
 	}
 }

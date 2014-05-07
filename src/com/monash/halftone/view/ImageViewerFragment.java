@@ -21,7 +21,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
-		// TODO Add details
+
+		ivMain = (ImageView) view.findViewById(R.id.ivImage);
 		return view;
 	}
 	
