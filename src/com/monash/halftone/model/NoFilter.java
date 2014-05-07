@@ -1,8 +1,10 @@
 package com.monash.halftone.model;
 
+import android.net.Uri;
+
 public class NoFilter extends FilteredImage {
 
-	public NoFilter(){
+	public NoFilter(Uri uri){
 		
 	}
 	

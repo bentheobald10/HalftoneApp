@@ -15,15 +15,15 @@ public class Image {
 	private int gridSize;
 	private String filename;
 	
-	public Image(String filename, Filter filter){
-		
+	public Image(Uri uri, String filename, Filter filter){
+		originalImage = new NoFilter(uri);
 	}
 	
 	public void setFilter(Context context, Filter filter){
 		switch(filter)
 		{
 		case NONE:
-			filteredImage = new NoFilter();
+			filteredImage = new NoFilter(null);
 			break;
 		case HALFTONE:
 			filteredImage = new Halftone(originalImage.getUri() , gridSize, context);
@@ -33,21 +33,23 @@ public class Image {
 			break;
 		}
 	}
+	public String getFilename(){
+		return filename;
+	}
 	
-	public void rename(String newName){
-		
+	public void setFilename(String filename){
+		this.filename = filename;
 	}
 	
 	public void addText(String text){
-		
+		textCaption.setText(text);
 	}
 	
 	public Bitmap getFilteredImage(){
-		
-		return null;
+		return filteredImage.getImage();
 	}
 	
-	public void reset(){
-		
+	public Bitmap reset(){
+		return originalImage.getImage();		
 	}
 }
