@@ -17,6 +17,7 @@ public class Image {
 	
 	public Image(Uri uri, String filename, Filter filter){
 		originalImage = new NoFilter(uri);
+		setFilename(filename);
 	}
 	
 	public void setFilter(Context context, Filter filter){

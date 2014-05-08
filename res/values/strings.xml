@@ -4,5 +4,7 @@
     <string name="app_name">FIT3140HalftoneApp</string>
     <string name="main_select">Please select image source:</string>
     <string name="action_settings">Settings</string>
+    <string name="rename">Rename</string>
+    <string name="save">Save</string>
 
 </resources>
