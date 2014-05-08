@@ -1,6 +1,7 @@
 package com.monash.halftone.view;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -13,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,13 @@ public class ImageViewerFragment extends Fragment implements OnClickListener {
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
 
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
+
+		String uri = getActivity().getIntent().getExtras().getString("image");
+
+		Bitmap bitmap = BitmapFactory.decodeFile(uri);
+		ivMain.setImageBitmap(bitmap);
+		Toast.makeText(getActivity(), "Added Image", Toast.LENGTH_LONG).show();
+
 		return view;
 	}
 
@@ -109,7 +118,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return file.getAbsolutePath();
 	}
 
