@@ -5,7 +5,7 @@ import android.net.Uri;
 public class NoFilter extends FilteredImage {
 
 	public NoFilter(Uri uri){
-		
+		this.uri = uri;
 	}
 	
 	@Override

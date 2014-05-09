@@ -1,37 +1,30 @@
 package com.monash.halftone.model;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Rect;
+import android.graphics.Paint;
 import android.net.Uri;
-import android.provider.MediaStore;
+import android.util.Log;
 
 public class Halftone extends FilteredImage {
 	private int gridSize;
+	Bitmap oldImage;
+	private float MAX_RADIUS;
 	
 	public Halftone(Uri file, int gridSize, Context context){
-		Bitmap oldImage;
-		try {
-			oldImage = MediaStore.Images.Media.getBitmap( context.getApplicationContext().getContentResolver(), file);
+		
+			oldImage = BitmapFactory.decodeFile(file.toString());// MediaStore.Images.Media.getBitmap( context.getApplicationContext().getContentResolver(), file);
 			width = oldImage.getWidth();
 			height = oldImage.getHeight();
 			this.gridSize = gridSize;
+			MAX_RADIUS = (float) Math.hypot(((float) this.gridSize/2), ((float) this.gridSize/2)); // Calculate the maximum radius for the gridsize using Pythagorus
 
 			image = Bitmap.createBitmap( ( width - ( width%gridSize ) ), ( height - ( height%gridSize ) ), Config.ARGB_8888 );
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			convert();
 	}
 
 	@Override
@@ -39,11 +32,11 @@ public class Halftone extends FilteredImage {
 		
 		Canvas c = new Canvas(image);										// Create canvas from Bitmap
 		Paint p = new Paint();													// 
-		p.setColor(Color.WHITE);
-		c.drawRect(new Rect(0, 0, width, height), p);
+//		p.setColor(Color.WHITE);
+//		c.drawRect(new Rect(0, 0, width, height), p);
 		p.setColor(Color.BLACK);
 		
-		c.drawCircle(100, 100, 10, p);		
+//		c.drawCircle(100, 100, 10, p);		
 
 		// Iterate over the gray BufferedImage for each grid to calculate the black intensity, then write this dot to halftone
 		for(int h = 0; h + gridSize <= height; h += gridSize)
@@ -58,7 +51,8 @@ public class Halftone extends FilteredImage {
 //					addToImagehash(grayValue);
 
 				// Draw the dot to the halftone image
-				c.drawCircle(w, h, grayValue, p);	
+				c.drawCircle(w, h, grayValue/( (float) 256/MAX_RADIUS ), p);	
+				Log.i("Halftone", calc + "");
 			}
 		}
 	}
@@ -80,8 +74,8 @@ public class Halftone extends FilteredImage {
 		{
 			for(int j = y; j < y + gridSize; j++)
 			{
-				int c = image.getPixel(h, j);// .getRaster().getPixel(h, j, pixel);
-				rgb = rgb + c;
+				int c = oldImage.getPixel(h, j);// .getRaster().getPixel(h, j, pixel);
+				rgb = rgb + (Color.red(c) + Color.green(c) + Color.blue(c))/3 ;
 			}
 		}
 		

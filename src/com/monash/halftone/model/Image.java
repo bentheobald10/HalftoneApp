@@ -15,8 +15,9 @@ public class Image {
 	private int gridSize;
 	private String filename;
 	
-	public Image(Uri uri, String filename, Filter filter){
+	public Image(Uri uri, String filename, Filter filter, int gridSize){
 		originalImage = new NoFilter(uri);
+		this.gridSize = gridSize;
 		setFilename(filename);
 	}
 	

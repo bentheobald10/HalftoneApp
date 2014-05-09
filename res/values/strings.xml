@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="rename">Rename</string>
     <string name="save">Save</string>
+    <string name="share">Share</string>
 
 </resources>

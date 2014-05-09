@@ -1,11 +1,8 @@
 package com.monash.halftone.view;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,58 +14,61 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monash.halftone.R;
-import com.monash.halftone.model.FilteredImage;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
-public class ImageViewerFragment extends Fragment implements OnClickListener {
+public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener {
 	ImageView ivMain;
 	Image image;
 	Uri uri;
 	Button bShare, bLoad, bSave;
-	RadioButton rbFilter;
+	RadioGroup rgFilter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
 
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
-
+		
+		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
+		rgFilter.setOnCheckedChangeListener(this);
 		//create filename
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		String imageFileName = "PNG_" + timeStamp + "_";
-		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
-		imgName.setText(imageFileName);
+//		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//		String imageFileName = "PNG_" + timeStamp + "_";
 		
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
+		
 		//set-up Image variable
-		image = new Image(uri, imageFileName, null);
+		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
 		image.setFilter(view.getContext(), Filter.NONE);
 		
-
-		Bitmap bitmap = BitmapFactory.decodeFile(uriString);
+		// Create image bitmap and add to the ImageView
+		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
 		ivMain.setImageBitmap(bitmap);
-		Toast.makeText(getActivity(), "Added Image", Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
+		
+		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
+		imgName.setText(image.getFilename());
 
-		Button share = (Button) view.findViewById(R.id.bShare);
-		share.setOnClickListener(this);
-		Button save = (Button) view.findViewById(R.id.bRename);
-		save.setOnClickListener(this);
+		// Add button On-Click Listeners
+		bShare = (Button) view.findViewById(R.id.bShare);
+		bShare.setOnClickListener(this);
+		bSave = (Button) view.findViewById(R.id.bRename);
+		bSave.setOnClickListener(this);
 		
 		return view;
 	}
@@ -86,17 +86,24 @@ public class ImageViewerFragment extends Fragment implements OnClickListener {
 		case R.id.bRename:
 			renameImage();
 			break;
+		}
+	}	
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch(checkedId)
+		{
 		case R.id.rbNone:
-			if (((RadioButton) v).isChecked())
-				applyImageFilter(Filter.NONE);
+			Log.i("ImageViewer", "None");
+			applyImageFilter(Filter.NONE);
 			break;
 		case R.id.rbHalftone:
-			if (((RadioButton) v).isChecked())
-				applyImageFilter(Filter.HALFTONE);
+			Log.i("ImageViewer", "Halftone");
+			applyImageFilter(Filter.HALFTONE);
 			break;
 		case R.id.rbGrayscale:
-			if (((RadioButton) v).isChecked())
-				applyImageFilter(Filter.GRAYSCALE);
+			Log.i("ImageViewer", "Grayscale");
+			applyImageFilter(Filter.GRAYSCALE);
 			break;
 		}
 	}
@@ -156,10 +163,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener {
 	}
 
 	private void shareImage(){
-		//TODO Save Image and get file path
-		File file = new File(saveImage());
-		
-		// Create Share Intent
+		// Create File from image file path
+		File file = new File(image.getFilename());
 		
 		// Get Uri from file location
 		Uri newUri = Uri.fromFile(file.getAbsoluteFile());

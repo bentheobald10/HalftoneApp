@@ -80,8 +80,7 @@ public class MainFragment extends Fragment implements OnClickListener{
 				Uri selectedImage = data.getData();
 	            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-	            Cursor cursor = getActivity().getContentResolver().query(
-	                               selectedImage, filePathColumn, null, null, null);
+	            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 	            cursor.moveToFirst();
 
 	            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
