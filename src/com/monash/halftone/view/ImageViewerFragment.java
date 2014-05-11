@@ -54,7 +54,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		
 		//set-up Image variable
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
-		image.setFilter(view.getContext(), Filter.NONE);
+		image.setFilter(view.getContext(), Filter.NONE, null);
 		
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
@@ -181,7 +181,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private void applyImageFilter(Image.Filter filter){
 		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
 		{
-			image.setFilter(this.getActivity().getApplicationContext(), filter);
+			image.setFilter(this.getActivity().getApplicationContext(), filter, ivMain);
 			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getFilteredImage()));
 		}
 	}
