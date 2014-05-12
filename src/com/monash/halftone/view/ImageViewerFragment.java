@@ -3,6 +3,8 @@ package com.monash.halftone.view;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -45,9 +47,6 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		
 		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
 		rgFilter.setOnCheckedChangeListener(this);
-		//create filename
-//		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//		String imageFileName = "PNG_" + timeStamp + "_";
 		
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
@@ -67,7 +66,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Add button On-Click Listeners
 		bShare = (Button) view.findViewById(R.id.bShare);
 		bShare.setOnClickListener(this);
-		bSave = (Button) view.findViewById(R.id.bRename);
+		bSave = (Button) view.findViewById(R.id.bSave);
 		bSave.setOnClickListener(this);
 		
 		return view;
@@ -81,11 +80,9 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			shareImage();
 			break;
 		case R.id.bSave:
-			loadImage();
+			saveImage();
 			break;
-		case R.id.bRename:
-			renameImage();
-			break;
+
 		}
 	}	
 
@@ -108,51 +105,44 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		}
 	}
 
-	private void renameImage() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-
-		alert.setTitle("Change image name");
-		
-		
-	}
-
-	private void loadImage(){
-		//TODO Add load from gallery
-	}
-
 	private String saveImage(){
 		File file;
-		String filename = image.getFilename();
-		if(filename == null)
-		Log.d("SaveImage", "filename is null");
+		//String filename = image.getFilename();
+	//	if(filename == null)
+//		Log.d("SaveImage", "filename is null");
+		//create filename
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String filename = "PNG_" + timeStamp + "_";
 
 		// Check External Storage State, if mounted and accessible
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) 
 		{
-			Toast.makeText(getActivity(), "SD Card", Toast.LENGTH_SHORT).show();
-			File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + filename);
+			Log.d("Storage", "External");
+			//Toast.makeText(getActivity(), "SD Card", Toast.LENGTH_SHORT).show();
+			File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Newspaperfy"); //"Newspaperfy" should be changed to name of application
 			dir.mkdirs();
-			file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + filename, filename + ".jpg");
+			file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Newspaperfy", filename + ".jpg");
 
 			// Get Bitmap from Drawables, then write image to file through fileoutputstream
 			//			Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
 			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			try {
 				FileOutputStream fo = new FileOutputStream(file);
-//				image.getFilteredImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
+				image.getFilteredImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
 			} catch (IOException e) {                       
 				e.printStackTrace();
 			}
 		}
 		else // Use Internal Storage
-		{ 		
+		{ 				
 			Toast.makeText(getActivity(), "Internal Storage", Toast.LENGTH_SHORT).show();
 			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			file = new File(getView().getContext().getFilesDir() + File.separator + filename + ".jpg");
+			
 			try {
 				FileOutputStream fo = getView().getContext().openFileOutput(filename + ".jpg", Context.MODE_WORLD_READABLE);
-				image.getFilteredImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
+				image.getFilteredImage().compress(Bitmap.CompressFormat.PNG, 100, fo);
 			} catch (IOException e) {                       
 				e.printStackTrace();
 			}
@@ -164,11 +154,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 	private void shareImage(){
 		// Create File from image file path
-		File file = new File(image.getFilename());
+		File file = new File(saveImage());
 		
 		// Get Uri from file location
 		Uri newUri = Uri.fromFile(file.getAbsoluteFile());
-		Log.d("ShareImage", uri.toString());
 		Intent shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("image/*");
 		shareIntent.putExtra(Intent.EXTRA_STREAM, newUri);

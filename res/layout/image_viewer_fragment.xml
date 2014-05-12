@@ -48,13 +48,6 @@
                 android:text="@string/share" />
 
             <Button
-                android:id="@+id/bRename"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/rename" />
-
-            <Button
                 android:id="@+id/bSave"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
