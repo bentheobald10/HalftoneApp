@@ -45,21 +45,23 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		
 		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
 		rgFilter.setOnCheckedChangeListener(this);
-		//create filename
-//		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//		String imageFileName = "PNG_" + timeStamp + "_";
+		rb = (RadioButton) view.findViewById(R.id.rbNone);
 		
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
 		
-		//set-up Image variable
-		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
-		image.setFilter(view.getContext(), Filter.NONE);
-		
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
 		ivMain.setImageBitmap(bitmap);
-		Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
+		//Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
+		
+		//create new filename
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = "PNG_" + timeStamp + "_";
+		//set-up Image variable
+		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
+		image.setFilter(view.getContext(), Filter.NONE);
+		image.setFilename(imageFileName);
 		
 		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
 		imgName.setText(image.getFilename());
@@ -67,7 +69,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Add button On-Click Listeners
 		bShare = (Button) view.findViewById(R.id.bShare);
 		bShare.setOnClickListener(this);
-		bSave = (Button) view.findViewById(R.id.bRename);
+		bSave = (Button) view.findViewById(R.id.bSave);
 		bSave.setOnClickListener(this);
 		
 		return view;
@@ -81,7 +83,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			shareImage();
 			break;
 		case R.id.bSave:
-			loadImage();
+			saveImage();
 			break;
 		case R.id.bRename:
 			renameImage();
@@ -165,6 +167,9 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private void shareImage(){
 		// Create File from image file path
 		File file = new File(image.getFilename());
+		
+		if(!rb.isChecked())
+			saveImage();
 		
 		// Get Uri from file location
 		Uri newUri = Uri.fromFile(file.getAbsoluteFile());
