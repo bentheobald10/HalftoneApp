@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 
 public class Halftone extends FilteredImage {
@@ -29,8 +30,8 @@ public class Halftone extends FilteredImage {
 		
 		Canvas c = new Canvas(image);										// Create canvas from Bitmap
 		Paint p = new Paint();													// 
-//		p.setColor(Color.WHITE);
-//		c.drawRect(new Rect(0, 0, width, height), p);
+		p.setColor(Color.WHITE);
+		c.drawRect(new Rect(0, 0, width, height), p);
 		p.setColor(Color.BLACK);	
 
 		// Iterate over the gray BufferedImage for each grid to calculate the black intensity, then write this dot to halftone

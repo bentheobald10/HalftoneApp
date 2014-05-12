@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +37,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	Uri uri;
 	Button bShare, bLoad, bSave;
 	RadioGroup rgFilter;
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
