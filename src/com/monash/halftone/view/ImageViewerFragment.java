@@ -50,6 +50,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
+		Log.d("String", uriString);
 		
 		//set-up Image variable
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
@@ -58,11 +59,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
 		ivMain.setImageBitmap(bitmap);
-		Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
+//		Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
 		
-		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
-		imgName.setText(image.getFilename());
-
+		addNameView(view);
+		
 		// Add button On-Click Listeners
 		bShare = (Button) view.findViewById(R.id.bShare);
 		bShare.setOnClickListener(this);
@@ -72,15 +72,23 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		return view;
 	}
 
+	private void addNameView(View view) {
+		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
+		String[] splitResult = (String[])image.getFilename().split("/");
+		try{
+		imgName.setText(splitResult[6]);
+		} catch (RuntimeException e){};		
+	}
+
 	@Override
 	public void onClick(View v) {
 		switch(v.getId())
 		{
 		case R.id.bShare:
-			shareImage();
+			shareImage(v);
 			break;
 		case R.id.bSave:
-			saveImage();
+			saveImage(v);
 			break;
 
 		}
@@ -105,7 +113,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		}
 	}
 
-	private String saveImage(){
+	private String saveImage(View v){
 		File file;
 		//String filename = image.getFilename();
 	//	if(filename == null)
@@ -148,13 +156,13 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			}
 		}		
 
-		Log.d("saveImage", file.getAbsolutePath());
+		addNameView(v);
 		return file.getAbsolutePath();
 	}
 
-	private void shareImage(){
+	private void shareImage(View v){
 		// Create File from image file path
-		File file = new File(saveImage());
+		File file = new File(saveImage(v));
 		
 		// Get Uri from file location
 		Uri newUri = Uri.fromFile(file.getAbsoluteFile());
