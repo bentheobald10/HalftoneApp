@@ -41,6 +41,13 @@
             android:orientation="vertical" >
 
             <Button
+                android:id="@+id/bSave"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/save" />
+
+            <Button
                 android:id="@+id/bShare"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -48,11 +55,11 @@
                 android:text="@string/share" />
 
             <Button
-                android:id="@+id/bSave"
+                android:id="@+id/bText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/save" />
+                android:text="@string/changeText" />
         </LinearLayout>
 
         <LinearLayout

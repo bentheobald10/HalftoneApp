@@ -7,5 +7,11 @@
     <string name="rename">Rename</string>
     <string name="save">Save</string>
     <string name="share">Share</string>
+    <string name="changeText">Add Caption</string>
+    <string name="dialog_caption">Caption</string>
+    <string name="proceed">Proceed</string>
+    <string name="cancel">Cancel</string>
+        
+    
 
 </resources>

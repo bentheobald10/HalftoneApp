@@ -2,7 +2,7 @@ package com.monash.halftone.model;
 
 public class Caption {
 	
-	private enum Position {
+	protected enum Position {
 		ABOVE, BELOW
 	};
 	

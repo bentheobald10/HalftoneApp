@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,15 +32,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monash.halftone.R;
+import com.monash.halftone.model.CaptionFragment;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
 public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener {
 	ImageView ivMain;
-	Image image;
+	static Image image;
 	Uri uri;
-	Button bShare, bLoad, bSave;
+	Button bShare, bText, bSave;
 	RadioGroup rgFilter;
+	static int capPos = 0;
 
 
 	@Override
@@ -68,6 +74,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		bShare.setOnClickListener(this);
 		bSave = (Button) view.findViewById(R.id.bSave);
 		bSave.setOnClickListener(this);
+		bText = (Button) view.findViewById(R.id.bText);
+		bText.setOnClickListener(this);
 		
 		return view;
 	}
@@ -90,9 +98,24 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		case R.id.bSave:
 			saveImage(v);
 			break;
-
+		case R.id.bText:
+			addCaption();
 		}
 	}	
+
+	private void addCaption() {
+		//position currently hardcoded
+		
+		
+		CaptionFragment dialog = new CaptionFragment();
+
+		dialog.show(getFragmentManager(), null);
+		
+		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+		{
+			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+		}
+	}
 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -137,7 +160,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			try {
 				FileOutputStream fo = new FileOutputStream(file);
-				image.getFilteredImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
+				image.getImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
 			} catch (IOException e) {                       
 				e.printStackTrace();
 			}
@@ -150,7 +173,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			
 			try {
 				FileOutputStream fo = getView().getContext().openFileOutput(filename + ".jpg", Context.MODE_WORLD_READABLE);
-				image.getFilteredImage().compress(Bitmap.CompressFormat.PNG, 100, fo);
+				image.getImage().compress(Bitmap.CompressFormat.PNG, 100, fo);
 			} catch (IOException e) {                       
 				e.printStackTrace();
 			}
@@ -179,7 +202,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
 		{
 			image.setFilter(this.getActivity().getApplicationContext(), filter, ivMain);
-			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getFilteredImage()));
+			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
 		}
 	}
+	
 }
