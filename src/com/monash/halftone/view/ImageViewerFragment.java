@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -199,11 +201,48 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	}
 
 	private void applyImageFilter(Image.Filter filter){
-		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+		new AsyncFilter(filter).execute();
+	}
+	
+	public class AsyncFilter extends AsyncTask<String, Integer, Void>
+	{
+		private Filter filter;
+		private ProgressDialog pd;
+		
+		public AsyncFilter(Filter filter)
 		{
-			image.setFilter(this.getActivity().getApplicationContext(), filter, ivMain);
-			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+			this.filter = filter;
 		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			pd = new ProgressDialog(getActivity());
+			pd.setTitle("Applying Filter");
+			pd.show();
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			image.setFilter(getActivity().getApplicationContext(), filter, ivMain);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+			{
+				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+				Toast.makeText(getActivity(), "Finished", Toast.LENGTH_SHORT).show();
+			}
+			
+			pd.dismiss();
+		}
+
+
+		
 	}
 	
 }
