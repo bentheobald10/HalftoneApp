@@ -3,7 +3,7 @@ package com.monash.halftone.model;
 public class Caption {
 	
 	private enum Position {
-		ABOVE, BELOW, LEFT, RIGHT
+		ABOVE, BELOW
 	};
 	
 	private Position pos;
