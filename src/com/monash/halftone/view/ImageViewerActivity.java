@@ -10,36 +10,36 @@ import android.widget.ImageView;
 import com.monash.halftone.R;
 import com.monash.halftone.model.Image;
 
-public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener{
-	ImageView ivMain;
-	Image image;
+public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener {
+	ImageViewerFragment imageFragment;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		ivMain = (ImageView) this.findViewById(R.id.ivImage);
+		imageFragment = new ImageViewerFragment();
 
 		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction().add(R.id.container, new ImageViewerFragment()).commit();
+			getFragmentManager().beginTransaction().add(R.id.container, imageFragment).commit();
 		}
 
 	}
 
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) {
-		image.addText(CaptionFragment.getText());
-		image.setCaptionPos(CaptionFragment.getPos());
-			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
-			{
-				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
-			}
+		imageFragment.onDialogPositiveClick(dialog);
+//		
+//		image.addText(CaptionFragment.getText());
+//		image.setCaptionPos(CaptionFragment.getPos());
+//			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+//			{
+//				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+//			}
 		
 	}
 
 	@Override
 	public void onDialogNegativeClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
-		
+		imageFragment.onDialogNegativeClick(dialog);
 	}
 }

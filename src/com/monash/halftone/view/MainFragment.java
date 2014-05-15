@@ -119,5 +119,4 @@ public class MainFragment extends Fragment implements OnClickListener{
 		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 		return image;
 	}
-
 }

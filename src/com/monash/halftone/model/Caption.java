@@ -2,8 +2,8 @@ package com.monash.halftone.model;
 
 public class Caption {
 	
-	protected enum Position {
-		ABOVE, BELOW
+	public enum Position {
+		ABOVE, BELOW, NONE
 	};
 	
 	private Position pos;
@@ -11,6 +11,7 @@ public class Caption {
 	
 	public Caption(String text){
 		this.text = text;
+		pos = Position.NONE;
 	}
 
 	public Position getPos() {

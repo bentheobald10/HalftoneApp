@@ -6,13 +6,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,7 +34,7 @@ import com.monash.halftone.R;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
-public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener, CaptionFragment.CaptionDialogListener {
+public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener {
 	ImageView ivMain;
 	Image image;
 	Uri uri;
@@ -84,6 +81,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private void addNameView(View view) {
 		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
 		String[] splitResult = (String[])image.getFilename().split("/");
+
 		try{
 		imgName.setText(splitResult[6]);
 		} catch (RuntimeException e){};		
@@ -109,12 +107,14 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		dialog.show(getFragmentManager(), "caption");
 	}
 		public void onDialogPositiveClick(DialogFragment dialog) {
-			image.addText(CaptionFragment.getText());
-			image.setCaptionPos(CaptionFragment.getPos());
-				if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
-				{
-					ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
-				}
+			CaptionFragment cf = (CaptionFragment)dialog;
+			image.addText(cf.getText());
+			image.setCaptionPos(cf.getPos());
+			
+			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+			{
+				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+			}
 	    }
 
 	    public void onDialogNegativeClick(DialogFragment dialog) {
@@ -242,10 +242,6 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			}
 			
 			pd.dismiss();
-		}
-
-
-		
-	}
-	
+		}		
+	}	
 }

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class Image {
@@ -54,15 +55,10 @@ public class Image {
 	
 	public void addText(String text){
 		textCaption.setText(text);
-
 	}
-	public void setCaptionPos(String sPos){
-		Position pos = null;
-		if (sPos.compareTo("Above")==0){
-			pos = Position.ABOVE;
-		}else if(sPos.compareTo("Below") ==0){
-			pos = Position.BELOW;
-		}
+	
+	public void setCaptionPos(Caption.Position pos){
+		Log.i("Image", pos.toString());
 		textCaption.setPos(pos);
 	}
 	
@@ -71,17 +67,28 @@ public class Image {
 		Bitmap returnImage = Bitmap.createBitmap(image.getWidth(), image.getHeight() + 50, Config.ARGB_8888);
 		Canvas canvas = new Canvas(returnImage);
 		Position pos = textCaption.getPos();
-		float x = 0,y = 50;
 		Paint p = new Paint();
+		p.setColor(Color.WHITE);
+		
+		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
+		
 		p.setTextSize(50); p.setTypeface(Typeface.DEFAULT); p.setColor(Color.BLACK);
-		if(pos != null){
-			switch(pos){
+		int x = 0, y = 0;
+
+		switch(pos)
+		{
 			case ABOVE:
+				canvas.drawBitmap(image, 0, 50, p);
+				canvas.drawText(textCaption.getText(),0,50,p);
+				break;
 			case BELOW:
-			}
+				canvas.drawBitmap(image, 0, 0, p);
+				canvas.drawText(textCaption.getText(),0,image.getHeight() + 50,p);
+				break;
+			case NONE:
+				return image;
 		}
-		canvas.drawBitmap(image, x, y, p);
-		canvas.drawText(textCaption.getText(),x,y,p);
+				
 		return returnImage;
 	}
 	
