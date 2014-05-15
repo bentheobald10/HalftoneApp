@@ -34,13 +34,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monash.halftone.R;
-import com.monash.halftone.model.CaptionFragment;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
-public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener {
+public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener, CaptionFragment.CaptionDialogListener {
 	ImageView ivMain;
-	static Image image;
+	Image image;
 	Uri uri;
 	Button bShare, bText, bSave;
 	RadioGroup rgFilter;
@@ -106,18 +105,22 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	}	
 
 	private void addCaption() {
-		//position currently hardcoded
-		
-		
 		CaptionFragment dialog = new CaptionFragment();
-
-		dialog.show(getFragmentManager(), null);
-		
-		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
-		{
-			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
-		}
+		dialog.show(getFragmentManager(), "caption");
 	}
+		public void onDialogPositiveClick(DialogFragment dialog) {
+			image.addText(CaptionFragment.getText());
+			image.setCaptionPos(CaptionFragment.getPos());
+				if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+				{
+					ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+				}
+	    }
+
+	    public void onDialogNegativeClick(DialogFragment dialog) {
+	        //do nothing
+	    }
+
 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {

@@ -53,8 +53,6 @@ public class Image {
 	}
 	
 	public void addText(String text){
-		Position pos = Position.ABOVE;	//hardcoded position
-		//textCaption.setPos(pos);		
 		textCaption.setText(text);
 
 	}
@@ -76,10 +74,11 @@ public class Image {
 		float x = 0,y = 50;
 		Paint p = new Paint();
 		p.setTextSize(50); p.setTypeface(Typeface.DEFAULT); p.setColor(Color.BLACK);
-		switch(pos){
-		case ABOVE:
-		case BELOW:
-			
+		if(pos != null){
+			switch(pos){
+			case ABOVE:
+			case BELOW:
+			}
 		}
 		canvas.drawBitmap(image, x, y, p);
 		canvas.drawText(textCaption.getText(),x,y,p);

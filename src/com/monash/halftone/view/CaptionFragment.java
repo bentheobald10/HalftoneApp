@@ -1,5 +1,6 @@
-package com.monash.halftone.model;
+package com.monash.halftone.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -8,49 +9,66 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import com.monash.halftone.R;
+import com.monash.halftone.model.Image;
 
 public class CaptionFragment extends DialogFragment {
-		int capPos = 0; //wrong spot
-		Image image = null; //wrong spot
+		static String capPos = null; 
+		Image image = null;
+		static String text = null;
+		
+	public interface CaptionDialogListener {
+	        public void onDialogPositiveClick(DialogFragment dialog);
+	        public void onDialogNegativeClick(DialogFragment dialog);
+	}
+	
+	CaptionDialogListener mListener;
+	
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        try{
+        	mListener = (CaptionDialogListener) activity;
+        } catch (ClassCastException e){
+        	throw new ClassCastException(activity.toString()
+                    + " must implement CaptionDialogListener");
+        }
+    
+    }
+	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final CharSequence[] items = {"Above", "Below"};
-		builder.setMessage(R.string.dialog_caption)
+		builder.setTitle(R.string.dialog_caption)
                .setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-					image.addText("Hello World");
-					if(capPos == 1){
-               			image.setCaptionPos("Above");
-               		} else if(capPos == 2){
-               			image.setCaptionPos("Below");
-               		}
-               		
+					text = "Hello World";
+					mListener.onDialogPositiveClick(CaptionFragment.this);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // User cancelled the dialog
+                       mListener.onDialogNegativeClick(CaptionFragment.this);
                    }
                })
-        		.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+        		.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int id){
         				if ("Above".equals(items[id])){
-        					capPos = 1;
+        					capPos = "Above";
         				}else if ("Below".equals(items[id])){
-        					capPos = 2;
+        					capPos = "Below";
         				}
         			}
         		});
         // Create the AlertDialog object and return it
         return builder.create();
     } 
-    public String getText(){
-		return null;
+    public static String getText(){
+		return text;
     	
     }
-    public int getPos(){
-    	return (Integer) null;
+    public static String getPos(){
+    	return capPos;
     }
 }
