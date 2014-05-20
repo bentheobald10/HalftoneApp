@@ -30,6 +30,9 @@ public class Image {
 		setFilename(filename);
 		textCaption = new Caption("");
 	}
+	public void setGridsize(int gridsize){
+		this.gridSize = gridsize;	
+	}
 	
 	public void setFilter(Context context, Filter filter, ImageView iv){
 		switch(filter)
