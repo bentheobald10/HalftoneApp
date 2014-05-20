@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 public class Image {
 	public enum Filter {
-		NONE, HALFTONE, GRAYSCALE
+		NONE, HALFTONE, GRAYSCALE, NEGATIVE
 	};
 	
 	private FilteredImage originalImage;
@@ -45,6 +45,9 @@ public class Image {
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
+			break;
+		case NEGATIVE:
+			filteredImage = new Negative(originalImage.getUri());
 			break;
 		}
 	}
