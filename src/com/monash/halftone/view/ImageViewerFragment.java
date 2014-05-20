@@ -138,6 +138,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			Log.i("ImageViewer", "Grayscale");
 			applyImageFilter(Filter.GRAYSCALE);
 			break;
+		case R.id.rbNegative:
+			Log.i("ImageViewer", "Negative");
+			applyImageFilter(Filter.NEGATIVE);
+			break;
 		}
 	}
 
