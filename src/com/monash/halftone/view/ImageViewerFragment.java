@@ -34,11 +34,11 @@ import com.monash.halftone.R;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
-public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener {
+public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener{
 	ImageView ivMain;
 	Image image;
 	Uri uri;
-	Button bShare, bText, bSave;
+	Button bShare, bText, bSave, bHalfOptions;
 	RadioGroup rgFilter;
 	static int capPos = 0;
 
@@ -63,7 +63,6 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
 		ivMain.setImageBitmap(bitmap);
-//		Toast.makeText(getActivity(), "Added Image " + image.getFilename(), Toast.LENGTH_LONG).show();
 		
 		addNameView(view);
 		
@@ -74,6 +73,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		bSave.setOnClickListener(this);
 		bText = (Button) view.findViewById(R.id.bText);
 		bText.setOnClickListener(this);
+		bHalfOptions = (Button) view.findViewById(R.id.bHalfOptions);
+		bHalfOptions.setOnClickListener(this);
 		
 		return view;
 	}
@@ -99,12 +100,20 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			break;
 		case R.id.bText:
 			addCaption();
+		case R.id.bHalfOptions:
+			changeHalftoning();
 		}
 	}	
 
+	private void changeHalftoning() {
+		HalftoneOptionsFragment options = new HalftoneOptionsFragment();
+		options.show(getFragmentManager(), "options");
+		
+	}
+
 	private void addCaption() {
-		CaptionFragment dialog = new CaptionFragment();
-		dialog.show(getFragmentManager(), "caption");
+		CaptionFragment capDialog = new CaptionFragment();
+		capDialog.show(getFragmentManager(), "caption");
 	}
 		public void onDialogPositiveClick(DialogFragment dialog) {
 			CaptionFragment cf = (CaptionFragment)dialog;

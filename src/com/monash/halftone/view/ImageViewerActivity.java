@@ -13,6 +13,7 @@ import com.monash.halftone.model.Image;
 public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener {
 	ImageViewerFragment imageFragment;
 	
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -28,13 +29,7 @@ public class ImageViewerActivity extends Activity implements CaptionFragment.Cap
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) {
 		imageFragment.onDialogPositiveClick(dialog);
-//		
-//		image.addText(CaptionFragment.getText());
-//		image.setCaptionPos(CaptionFragment.getPos());
-//			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
-//			{
-//				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
-//			}
+
 		
 	}
 

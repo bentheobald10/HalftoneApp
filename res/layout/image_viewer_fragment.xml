@@ -60,6 +60,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/changeText" />
+
+            <Button
+                android:id="@+id/bHalfOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/halfOp" />
+
         </LinearLayout>
 
         <LinearLayout
