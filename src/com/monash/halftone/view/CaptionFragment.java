@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -53,6 +54,7 @@ public class CaptionFragment extends DialogFragment {
 		final EditText input = new EditText(getActivity());
 		input.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		input.setHint("Add caption here");
+		input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40) });
 		builder.setView(input);
 
 
@@ -60,15 +62,7 @@ public class CaptionFragment extends DialogFragment {
 		.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				text = input.getText().toString();
-				if(text.length() >= 1 && text.length()<= 40){
-					mListener.onDialogPositiveClick(CaptionFragment.this);
-				}else if(text.length() < 1){
-					Toast.makeText(getActivity(), "Your caption was too short. Please make your caption at least 1 letter long.",
-							Toast.LENGTH_LONG).show();
-				}else if(text.length() > 40){
-					Toast.makeText(getActivity(), "Your caption was too long. Please make your caption is less than 40 characters",
-							Toast.LENGTH_LONG).show();
-				}
+				mListener.onDialogPositiveClick(CaptionFragment.this);
 			}
 		})
 		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
