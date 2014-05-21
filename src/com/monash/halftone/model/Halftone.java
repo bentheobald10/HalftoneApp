@@ -8,14 +8,23 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.util.Log;
 
 public class Halftone extends FilteredImage {
 	private int gridSize;
 	private float MAX_RADIUS;
+	private HalftoneShape halftoneShape;
 	
-	public Halftone(Uri file, int gridSize){
+	public enum HalftoneShape
+	{
+		CIRCLE, SQUARE, DIAMOND
+	};
+	
+	public Halftone(Uri file, int gridSize, HalftoneShape halftoneShape){
 		uri = file;
 		this.gridSize = gridSize;
+		this.halftoneShape = halftoneShape;
+		
 		Bitmap oldImage = BitmapFactory.decodeFile(uri.toString());
 		width = oldImage.getWidth();
 		height = oldImage.getHeight();
@@ -55,8 +64,22 @@ public class Halftone extends FilteredImage {
 				calc /= (gridSize * gridSize);
 				float grayValue = 255 - calc;
 
-				// Draw the dot to the halftone image
-				c.drawCircle(w, h, grayValue/( (float) 256/MAX_RADIUS ), p);
+				switch(halftoneShape)
+				{
+				case CIRCLE:
+					// Draw the dot to the halftone image
+					c.drawCircle((w + w + gridSize)/2, (h + h + gridSize)/2, grayValue/( (float) 256/MAX_RADIUS ), p);
+					break;
+				case SQUARE:
+					c.drawRect((w + w + gridSize)/2, (h + h + gridSize)/2, (w + w + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), (h + h + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), p);
+					break;
+				case DIAMOND:
+					c.save();
+					c.rotate(45, (w + w + gridSize)/2, (h + h + gridSize)/2);
+					c.drawRect((w + w + gridSize)/2, (h + h + gridSize)/2, (w + w + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), (h + h + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), p);
+					c.restore();
+					break;
+				}
 			}
 		}
 	}

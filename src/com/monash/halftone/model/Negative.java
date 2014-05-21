@@ -28,21 +28,26 @@ public class Negative extends FilteredImage {
 		Canvas c = new Canvas(image);
 		Paint p = new Paint();	
 		
+		// Converts to Grayscale
 		ColorMatrix matrix = new ColorMatrix();
 	    matrix.setSaturation(0);
 	    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
 		p.setColorFilter(filter);
 		
+		// Gets amount of pixels in image
 		int pixels = oldImage.getWidth() * image.getHeight();
 		int[] imagePixels = new int[pixels];
 		
+		// Get all the image pixels
 		oldImage.getPixels(imagePixels, 0, width, 0, 0, width, height);
 		
+		// Iterate over the pixels and produce the negative of that pixel (255 - pixel)
 		for(int i = 0; i < pixels; i++)
 		{
 			imagePixels[i] = 0xffffffff - imagePixels[i];
 		}
 		
+		// Draw the bitmap from the pixel array
 		c.drawBitmap(imagePixels, 0, width, 0, 0, width, height, false, p);
 	}
 

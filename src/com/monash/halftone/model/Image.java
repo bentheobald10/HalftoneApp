@@ -1,6 +1,7 @@
 package com.monash.halftone.model;
 
 import com.monash.halftone.model.Caption.Position;
+import com.monash.halftone.model.Halftone.HalftoneShape;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -34,14 +35,14 @@ public class Image {
 		this.gridSize = gridsize;	
 	}
 	
-	public void setFilter(Context context, Filter filter, ImageView iv){
+	public void setFilter(Filter filter){
 		switch(filter)
 		{
 		case NONE:
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize);
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, HalftoneShape.DIAMOND);
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
@@ -51,6 +52,7 @@ public class Image {
 			break;
 		}
 	}
+	
 	public String getFilename(){
 		return filename;
 	}
@@ -70,26 +72,30 @@ public class Image {
 	
 	public Bitmap getImage(){
 		Bitmap image = filteredImage.getImage();
-		Bitmap returnImage = Bitmap.createBitmap(image.getWidth(), image.getHeight() + 50, Config.ARGB_8888);
+		int size =  (int) Math.ceil( Math.hypot(((float) image.getWidth()/2), ((float) image.getHeight()/2)) );
+		Bitmap returnImage = Bitmap.createBitmap(size*2, (size*2) + 50, Config.ARGB_8888);
 		Canvas canvas = new Canvas(returnImage);
 		Position pos = textCaption.getPos();
 		Paint p = new Paint();
-		p.setColor(Color.WHITE);
+		p.setColor(Color.RED);
 		
 		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
 		
 		p.setTextSize(50); p.setTypeface(Typeface.DEFAULT); p.setColor(Color.BLACK);
 		int x = 0, y = 0;
 
+//		canvas.rotate(45, image.getWidth()/2, image.getHeight()/2);
+
+//		canvas.rotate(45, size, size);
 		switch(pos)
 		{
 			case ABOVE:
-				canvas.drawBitmap(image, 0, 50, p);
-				canvas.drawText(textCaption.getText(),0,50,p);
+				canvas.drawBitmap(image, size-(image.getWidth()/2), size-(image.getHeight()/2) + 50, p);
+				canvas.drawText(textCaption.getText(),size-(image.getWidth()/2), size-(image.getHeight()/2) + 50,p);
 				break;
 			case BELOW:
-				canvas.drawBitmap(image, 0, 0, p);
-				canvas.drawText(textCaption.getText(),0,image.getHeight() + 50,p);
+				canvas.drawBitmap(image, size-(image.getWidth()/2), size-(image.getHeight()/2), p);
+				canvas.drawText(textCaption.getText(),size-(image.getWidth()/2), size-(image.getHeight()/2) + image.getHeight() + 50,p);
 				break;
 			case NONE:
 				return image;

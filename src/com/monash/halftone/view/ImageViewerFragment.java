@@ -58,11 +58,11 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 		//set-up Image variable
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
-		image.setFilter(view.getContext(), Filter.NONE, null);
+		image.setFilter(Filter.NONE);
 
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
-		ivMain.setImageBitmap(bitmap);
+		ivMain.setImageBitmap( image.getImage());//  bitmap);
 
 		addNameView(view);
 
@@ -251,7 +251,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 		@Override
 		protected Void doInBackground(String... params) {
-			image.setFilter(getActivity().getApplicationContext(), filter, ivMain);
+			image.setFilter(filter);
 			return null;
 		}
 
