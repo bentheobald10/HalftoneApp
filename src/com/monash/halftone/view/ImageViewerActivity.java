@@ -10,14 +10,14 @@ import android.widget.ImageView;
 import com.monash.halftone.R;
 import com.monash.halftone.model.Image;
 
-public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener {
+public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener, HalftoneOptionsFragment.HalftoneOptionsDialogListener  {
 	ImageViewerFragment imageFragment;
-	
-	
+
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		imageFragment = new ImageViewerFragment();
 
 		if (savedInstanceState == null) {
@@ -26,15 +26,25 @@ public class ImageViewerActivity extends Activity implements CaptionFragment.Cap
 
 	}
 
-	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) {
-		imageFragment.onDialogPositiveClick(dialog);
+		imageFragment.onCapDialogPositiveClick(dialog);
 
-		
+
+	}
+
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		imageFragment.onCapDialogNegativeClick(dialog);
 	}
 
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
-		imageFragment.onDialogNegativeClick(dialog);
+	public void onHalfOpDialogPositiveClick(DialogFragment dialog) {
+		imageFragment.onHalfOpDialogPositiveClick(dialog);
+
 	}
+
+	@Override
+	public void onHalfOpDialogNegativeClick(DialogFragment dialog) {
+		imageFragment.onHalfOpDialogNegativeClick(dialog);
+	}
+
 }

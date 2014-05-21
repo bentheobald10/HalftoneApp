@@ -25,11 +25,23 @@ import com.monash.halftone.view.CaptionFragment.CaptionDialogListener;
 
 public class HalftoneOptionsFragment extends DialogFragment {
 	public interface HalftoneOptionsDialogListener {
-		public void onDialogPositiveClick(DialogFragment dialog);
-		public void onDialogNegativeClick(DialogFragment dialog);
+		public void onHalfOpDialogPositiveClick(DialogFragment dialog);
+		public void onHalfOpDialogNegativeClick(DialogFragment dialog);
 	}
 
 	HalftoneOptionsDialogListener mListener;
+	
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		try{
+			mListener = (HalftoneOptionsDialogListener) activity;
+		} catch (ClassCastException e){
+			throw new ClassCastException(activity.toString()
+					+ " must implement CaptionDialogListener");
+		}
+
+	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -44,11 +56,21 @@ public class HalftoneOptionsFragment extends DialogFragment {
 		
 		
 		builder.setTitle(R.string.halfOp)
-		.setView(text)
+//		.setView(text)
 		.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				
+			}
+		})
+		.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				mListener.onHalfOpDialogPositiveClick(HalftoneOptionsFragment.this);
+			}
+		})
+		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				mListener.onHalfOpDialogNegativeClick(HalftoneOptionsFragment.this);
 			}
 		});
 

@@ -40,7 +40,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	Uri uri;
 	Button bShare, bText, bSave, bHalfOptions;
 	RadioGroup rgFilter;
-	static int capPos = 0;
+	int capPos = 0;
 
 
 	@Override
@@ -48,24 +48,24 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
 
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
-		
+
 		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
 		rgFilter.setOnCheckedChangeListener(this);
-		
+
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
 		Log.d("String", uriString);
-		
+
 		//set-up Image variable
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
 		image.setFilter(view.getContext(), Filter.NONE, null);
-		
+
 		// Create image bitmap and add to the ImageView
 		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
 		ivMain.setImageBitmap(bitmap);
-		
+
 		addNameView(view);
-		
+
 		// Add button On-Click Listeners
 		bShare = (Button) view.findViewById(R.id.bShare);
 		bShare.setOnClickListener(this);
@@ -75,7 +75,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		bText.setOnClickListener(this);
 		bHalfOptions = (Button) view.findViewById(R.id.bHalfOptions);
 		bHalfOptions.setOnClickListener(this);
-		
+
 		return view;
 	}
 
@@ -84,7 +84,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		String[] splitResult = (String[])image.getFilename().split("/");
 
 		try{
-		imgName.setText(splitResult[6]);
+			imgName.setText(splitResult[6]);
 		} catch (RuntimeException e){};		
 	}
 
@@ -100,36 +100,46 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			break;
 		case R.id.bText:
 			addCaption();
+			break;
 		case R.id.bHalfOptions:
 			changeHalftoning();
+			break;
 		}
 	}	
 
-	private void changeHalftoning() {
-		HalftoneOptionsFragment options = new HalftoneOptionsFragment();
-		options.show(getFragmentManager(), "options");
-		
-	}
+
 
 	private void addCaption() {
 		CaptionFragment capDialog = new CaptionFragment();
 		capDialog.show(getFragmentManager(), "caption");
 	}
-		public void onDialogPositiveClick(DialogFragment dialog) {
-			CaptionFragment cf = (CaptionFragment)dialog;
-			image.addText(cf.getText());
-			image.setCaptionPos(cf.getPos());
-			
-			if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
-			{
-				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
-			}
-	    }
+	//Caption return methods
+	public void onCapDialogPositiveClick(DialogFragment dialog) {
+		CaptionFragment cf = (CaptionFragment)dialog;
+		image.addText(cf.getText());
+		image.setCaptionPos(cf.getPos());
 
-	    public void onDialogNegativeClick(DialogFragment dialog) {
-	        //do nothing
-	    }
+		if( ((BitmapDrawable)(ivMain.getDrawable())).getBitmap() != null )
+		{
+			ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
+		}
+	}
+	public void onCapDialogNegativeClick(DialogFragment dialog) {
+		//do nothing
+	}
 
+
+	private void changeHalftoning() {
+		HalftoneOptionsFragment options = new HalftoneOptionsFragment();
+		options.show(getFragmentManager(), "options");
+
+	}
+	public void onHalfOpDialogPositiveClick(DialogFragment dialog){
+
+	}
+	public void onHalfOpDialogNegativeClick(DialogFragment dialog){
+		//do nothing
+	}
 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -157,8 +167,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private String saveImage(View v){
 		File file;
 		//String filename = image.getFilename();
-	//	if(filename == null)
-//		Log.d("SaveImage", "filename is null");
+		//	if(filename == null)
+		//		Log.d("SaveImage", "filename is null");
 		//create filename
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String filename = "PNG_" + timeStamp + "_";
@@ -188,7 +198,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			Toast.makeText(getActivity(), "Internal Storage", Toast.LENGTH_SHORT).show();
 			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			file = new File(getView().getContext().getFilesDir() + File.separator + filename + ".jpg");
-			
+
 			try {
 				FileOutputStream fo = getView().getContext().openFileOutput(filename + ".jpg", Context.MODE_WORLD_READABLE);
 				image.getImage().compress(Bitmap.CompressFormat.PNG, 100, fo);
@@ -204,7 +214,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private void shareImage(View v){
 		// Create File from image file path
 		File file = new File(saveImage(v));
-		
+
 		// Get Uri from file location
 		Uri newUri = Uri.fromFile(file.getAbsoluteFile());
 		Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -219,12 +229,12 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	private void applyImageFilter(Image.Filter filter){
 		new AsyncFilter(filter).execute();
 	}
-	
+
 	public class AsyncFilter extends AsyncTask<String, Integer, Void>
 	{
 		private Filter filter;
 		private ProgressDialog pd;
-		
+
 		public AsyncFilter(Filter filter)
 		{
 			this.filter = filter;
@@ -233,7 +243,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			
+
 			pd = new ProgressDialog(getActivity());
 			pd.setTitle("Applying Filter");
 			pd.show();
@@ -253,7 +263,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 				ivMain.setImageDrawable( new BitmapDrawable(getResources(), image.getImage()));
 				Toast.makeText(getActivity(), "Finished", Toast.LENGTH_SHORT).show();
 			}
-			
+
 			pd.dismiss();
 		}		
 	}	
