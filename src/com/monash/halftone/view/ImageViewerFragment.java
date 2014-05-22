@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monash.halftone.R;
+import com.monash.halftone.model.Halftone;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
 
@@ -110,8 +111,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 
 	private void addCaption() {
-		CaptionFragment capDialog = new CaptionFragment();
-		capDialog.show(getFragmentManager(), "caption");
+		CaptionFragment cf = new CaptionFragment();
+		cf.show(getFragmentManager(), "caption");
 	}
 	//Caption return methods
 	public void onCapDialogPositiveClick(DialogFragment dialog) {
@@ -130,12 +131,15 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 
 	private void changeHalftoning() {
-		HalftoneOptionsFragment options = new HalftoneOptionsFragment();
-		options.show(getFragmentManager(), "options");
+		HalftoneOptionsFragment hf = new HalftoneOptionsFragment();
+		hf.show(getFragmentManager(), "options");
 
 	}
 	public void onHalfOpDialogPositiveClick(DialogFragment dialog){
-
+		HalftoneOptionsFragment hf  = (HalftoneOptionsFragment)dialog;
+		Halftone.HalftoneShape hShape = hf.getHShape();
+		
+		image.setHalftoneShape(hShape);
 	}
 	public void onHalfOpDialogNegativeClick(DialogFragment dialog){
 		//do nothing

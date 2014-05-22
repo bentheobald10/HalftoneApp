@@ -17,8 +17,24 @@ public class Halftone extends FilteredImage {
 	
 	public enum HalftoneShape
 	{
-		CIRCLE, SQUARE, DIAMOND
+		CIRCLE(0),
+		DIAMOND(1),
+		RECTANGLE(2);
+		
+		private int id;
+		
+		private HalftoneShape(int id)
+		{
+			this.id = id;
+		}
+		
+		public int getId()
+		{
+			return this.id;
+		}
 	};
+	
+
 	
 	public Halftone(Uri file, int gridSize, HalftoneShape halftoneShape){
 		uri = file;
@@ -70,7 +86,7 @@ public class Halftone extends FilteredImage {
 					// Draw the dot to the halftone image
 					c.drawCircle((w + w + gridSize)/2, (h + h + gridSize)/2, grayValue/( (float) 256/MAX_RADIUS ), p);
 					break;
-				case SQUARE:
+				case RECTANGLE:
 					c.drawRect((w + w + gridSize)/2, (h + h + gridSize)/2, (w + w + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), (h + h + gridSize)/2 +  grayValue/( (float) 256/MAX_RADIUS ), p);
 					break;
 				case DIAMOND:

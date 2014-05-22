@@ -1,7 +1,7 @@
 package com.monash.halftone.model;
 
 import com.monash.halftone.model.Caption.Position;
-import com.monash.halftone.model.Halftone.HalftoneShape;
+import com.monash.halftone.model.Halftone;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -24,6 +24,7 @@ public class Image {
 	private Caption textCaption;
 	private int gridSize;
 	private String filename;
+	private Halftone.HalftoneShape halftoneShape;
 	
 	public Image(Uri uri, String filename, Filter filter, int gridSize){
 		originalImage = new NoFilter(uri);
@@ -42,7 +43,7 @@ public class Image {
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize, HalftoneShape.DIAMOND);
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape);
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
@@ -69,7 +70,9 @@ public class Image {
 		Log.i("Image", pos.toString());
 		textCaption.setPos(pos);
 	}
-	
+	public void setHalftoneShape(Halftone.HalftoneShape hShape){		
+		halftoneShape = hShape;
+	}
 	public Bitmap getImage(){
 		Bitmap image = filteredImage.getImage();
 		int size =  (int) Math.ceil( Math.hypot(((float) image.getWidth()/2), ((float) image.getHeight()/2)) );
@@ -107,4 +110,5 @@ public class Image {
 	public Bitmap reset(){
 		return originalImage.getImage();		
 	}
+	
 }

@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.monash.halftone.R;
 import com.monash.halftone.model.Caption;
+import com.monash.halftone.model.Halftone;
+import com.monash.halftone.model.Halftone.HalftoneShape;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Caption.Position;
 import com.monash.halftone.view.CaptionFragment.CaptionDialogListener;
@@ -30,7 +32,8 @@ public class HalftoneOptionsFragment extends DialogFragment {
 	}
 
 	HalftoneOptionsDialogListener mListener;
-	
+	static Halftone.HalftoneShape hShape;
+
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
@@ -52,15 +55,21 @@ public class HalftoneOptionsFragment extends DialogFragment {
 
 		TextView text = new TextView(getActivity());
 		text.setText("Choose which shape to Halftone your image with");
-//		builder.setView(text);
-		
-		
+		//		builder.setView(text);
+		if(hShape == null)
+			hShape = Halftone.HalftoneShape.CIRCLE;
+
 		builder.setTitle(R.string.halfOp)
-//		.setView(text)
-		.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				
+		//		.setView(text)
+		.setSingleChoiceItems(items, hShape.getId(), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if ("Circles".compareTo(items[which].toString()) == 0){
+					hShape = Halftone.HalftoneShape.CIRCLE;
+				} else if("Diamonds".compareTo(items[which].toString()) == 0){
+					hShape = Halftone.HalftoneShape.DIAMOND;
+				} else if("Rectangles".compareTo(items[which].toString()) == 0){
+					hShape = Halftone.HalftoneShape.RECTANGLE;
+				}
 			}
 		})
 		.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
@@ -74,11 +83,14 @@ public class HalftoneOptionsFragment extends DialogFragment {
 			}
 		});
 
-	
 
 
-	
+
+
 		// Create the AlertDialog object and return it
 		return builder.create();
 	} 
+	public HalftoneShape getHShape(){
+		return hShape;
+	}
 }
