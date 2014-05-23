@@ -1,6 +1,7 @@
 package com.monash.halftone.model;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 
 public abstract class FilteredImage{

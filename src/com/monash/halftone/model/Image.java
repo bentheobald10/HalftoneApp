@@ -1,9 +1,8 @@
 package com.monash.halftone.model;
 
 import com.monash.halftone.model.Caption.Position;
-import com.monash.halftone.model.Halftone;
+import com.monash.halftone.model.Halftone.HalftoneShape;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -12,9 +11,23 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.ImageView;
 
+/**
+ * The Image class creates the bitmap that is displayed with a caption.
+ * It has references to a FilteredImage and a Caption, and then returns the Image created by combining both of these.
+ * It provides the ability to set the Image Filter to use and updates it's Image based on the Filter chosen.
+ * 
+ * @author Ben Theobald and Jake Spicer
+ *
+ */
 public class Image {
+	/**
+	 * An enum class that provides definitions for the different Filters available on a FilteredImage.
+	 * Any new filters will need to be added here to be referenced correctly
+	 *
+	 *@author Ben Theobald and Jake Spicer
+	 *
+	 */
 	public enum Filter {
 		NONE, HALFTONE, GRAYSCALE, NEGATIVE
 	};
@@ -24,26 +37,44 @@ public class Image {
 	private Caption textCaption;
 	private int gridSize;
 	private String filename;
-	private Halftone.HalftoneShape halftoneShape;
 	
+	/**
+	 * The constructor for creating a base Image object.
+	 * 
+	 * @param uri The Uri of where the Image Bitmap is located in the system to be read
+	 * @param filename The Filename of the image to be set
+	 * @param filter The Filter to apply to the created Image
+	 * @param gridSize The gridsize to use for the Halftone Image, this will be null or 0 for other Images
+	 */
 	public Image(Uri uri, String filename, Filter filter, int gridSize){
 		originalImage = new NoFilter(uri);
 		this.gridSize = gridSize;
 		setFilename(filename);
 		textCaption = new Caption("");
 	}
+	/**
+	 * Sets the grid Size for the Halftone Image
+	 * @param gridsize
+	 */
 	public void setGridsize(int gridsize){
 		this.gridSize = gridsize;	
 	}
 	
+	/**
+	 * Set the Filter for the Image.
+	 * Possible values are NONE, HALFTONE, GRAYSCALE and NEGATIVE
+	 * 
+	 * @param filter The filter to apply to the Image
+	 */
 	public void setFilter(Filter filter){
+		// Switch on the filter provided
 		switch(filter)
 		{
 		case NONE:
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape);
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, HalftoneShape.DIAMOND);
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
@@ -54,27 +85,54 @@ public class Image {
 		}
 	}
 	
+	/**
+	 * Get the filename of the Image
+	 * 
+	 * @return The filename of the Image
+	 */
 	public String getFilename(){
 		return filename;
 	}
 	
+	/**
+	 * Set the filename of the Image
+	 * 
+	 * @param filename The filename to set for the Image
+	 */
 	public void setFilename(String filename){
 		this.filename = filename;
 	}
 	
+	/**
+	 * The text of the caption to add to the Image
+	 * 
+	 * @param text The text the caption should display
+	 */
 	public void addText(String text){
 		textCaption.setText(text);
 	}
 	
+	/**
+	 * Set the caption position relative to the Image.
+	 * Possible values are ABOVE or BELOW
+	 * 
+	 * @param pos The position of the Caption relative to the Image
+	 */
 	public void setCaptionPos(Caption.Position pos){
 		Log.i("Image", pos.toString());
 		textCaption.setPos(pos);
 	}
-	public void setHalftoneShape(Halftone.HalftoneShape hShape){		
-		halftoneShape = hShape;
-	}
+	
+	/**
+	 * Combines the FilteredImage and the Caption to a Bitmap Image to display
+	 * 
+	 * @return A Bitmap Image that combines the Image and the Caption
+	 */
 	public Bitmap getImage(){
+		// Get the FilteredImage object
 		Bitmap image = filteredImage.getImage();
+		
+		// Calculate the size of the Bitmap to use for the new bitmap so that the grid can be rotated without image loss
 		int size =  (int) Math.ceil( Math.hypot(((float) image.getWidth()/2), ((float) image.getHeight()/2)) );
 		Bitmap returnImage = Bitmap.createBitmap(size*2, (size*2) + 50, Config.ARGB_8888);
 		Canvas canvas = new Canvas(returnImage);
@@ -84,12 +142,14 @@ public class Image {
 		
 		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
 		
+		// Set default text size to 50 pixels
 		p.setTextSize(50); p.setTypeface(Typeface.DEFAULT); p.setColor(Color.BLACK);
-		int x = 0, y = 0;
 
 //		canvas.rotate(45, image.getWidth()/2, image.getHeight()/2);
 
 //		canvas.rotate(45, size, size);
+		
+		// Switch to determine where the caption is placed. Image is placed in the middle of the canvas
 		switch(pos)
 		{
 			case ABOVE:
@@ -107,8 +167,12 @@ public class Image {
 		return returnImage;
 	}
 	
+	/**
+	 * Reset the Image to how it was originally passed
+	 * 
+	 * @return The original image passed
+	 */
 	public Bitmap reset(){
 		return originalImage.getImage();		
 	}
-	
 }
