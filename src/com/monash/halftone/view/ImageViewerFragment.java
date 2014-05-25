@@ -61,9 +61,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
 		image.setFilter(Filter.NONE);
 
-		// Create image bitmap and add to the ImageView
-		Bitmap bitmap = BitmapFactory.decodeFile(image.getFilename());
-		ivMain.setImageBitmap( image.getImage());//  bitmap);
+		// Add Image to the ImageView
+		ivMain.setImageBitmap( image.getImage());
 
 		addNameView(view);
 
@@ -106,15 +105,17 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			changeHalftoning();
 			break;
 		}
-	}	
-
-
+	}
 
 	private void addCaption() {
 		CaptionFragment cf = new CaptionFragment();
 		cf.show(getFragmentManager(), "caption");
 	}
-	//Caption return methods
+	
+	/**
+	 * Caption return methods
+	 * @param dialog
+	 */
 	public void onCapDialogPositiveClick(DialogFragment dialog) {
 		CaptionFragment cf = (CaptionFragment)dialog;
 		image.addText(cf.getText());

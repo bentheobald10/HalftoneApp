@@ -34,6 +34,7 @@ public class Image {
 	
 	private FilteredImage originalImage;
 	private FilteredImage filteredImage;
+	private HalftoneShape halftoneShape;
 	private Caption textCaption;
 	private int gridSize;
 	private String filename;
@@ -49,6 +50,7 @@ public class Image {
 	public Image(Uri uri, String filename, Filter filter, int gridSize){
 		originalImage = new NoFilter(uri);
 		this.gridSize = gridSize;
+		halftoneShape = Halftone.HalftoneShape.CIRCLE;
 		setFilename(filename);
 		textCaption = new Caption("");
 	}
@@ -74,7 +76,7 @@ public class Image {
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize, HalftoneShape.DIAMOND);
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape);
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
@@ -121,6 +123,11 @@ public class Image {
 	public void setCaptionPos(Caption.Position pos){
 		Log.i("Image", pos.toString());
 		textCaption.setPos(pos);
+	}
+	
+	public void setHalftoneShape(Halftone.HalftoneShape shape)
+	{
+		halftoneShape = shape;
 	}
 	
 	/**
