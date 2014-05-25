@@ -77,10 +77,46 @@ public class Halftone extends FilteredImage {
 		width = oldImage.getWidth();
 		height = oldImage.getHeight();
 		MAX_RADIUS = (float) Math.hypot(((float) this.gridSize/2), ((float) this.gridSize/2)); // Calculate the maximum radius for the gridsize using Pythagorus
-
+		
+		// Calculate the size of the Bitmap to use for the new bitmap so that the grid can be rotated without image loss
+		int size =  (int) Math.ceil( Math.hypot(((float) oldImage.getWidth()/2), ((float) oldImage.getHeight()/2)) );
+		Bitmap returnImage = Bitmap.createBitmap(size*2, (size*2), Config.ARGB_8888);
+		
 		// Create Bitmap for the image and run the convert() to make it halftoned
-		image = Bitmap.createBitmap( ( width - ( width%gridSize ) ), ( height - ( height%gridSize ) ), Config.ARGB_8888 );
-		convert( oldImage);
+//		image = Bitmap.createBitmap( ( width - ( width%gridSize ) ), ( height - ( height%gridSize ) ), Config.ARGB_8888 );
+//		image = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		image = Bitmap.createBitmap(returnImage.getWidth(), returnImage.getHeight(), Config.ARGB_8888);
+		
+		Paint p = new Paint();
+		Canvas canvas = new Canvas(returnImage);
+		p.setColor(Color.WHITE);
+		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
+		p.setColor(Color.BLACK);
+		
+		canvas.save();
+
+		// Draw the old image on the new Bitmap in the center, then rotate 45 degrees
+		canvas.rotate(45, returnImage.getWidth()/2, returnImage.getHeight()/2);
+		canvas.drawBitmap(oldImage, size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), p);
+		
+		// Convert the image to halftone
+		convert( returnImage);
+//		
+//		Canvas c = new Canvas(image);
+//		p.setColor(Color.WHITE);
+//		c.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
+//		c.rotate(45, image.getWidth()/2, image.getHeight()/2);
+//		c.drawBitmap(image, 0, 0, p);
+		
+		// Restore the orientation and get the pixels changed
+//		canvas.restore();
+//		int[] pixels = new int[oldImage.getWidth()*oldImage.getHeight()];
+//		
+//		returnImage.getPixels(pixels, 0, oldImage.getWidth(), size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), oldImage.getWidth(), oldImage.getHeight());
+		
+//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
+		
+//		image = Bitmap.createBitmap(returnImage);
 	}
 
 	/**
@@ -88,17 +124,22 @@ public class Halftone extends FilteredImage {
 	 */
 	@Override
 	protected void convert(Bitmap oldImage) {
+		Bitmap intermediate = Bitmap.createBitmap(oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
 		
 		Canvas c = new Canvas(image);	// Create canvas from Bitmap
 		Paint p = new Paint();			// Create a new Paint
 		p.setColor(Color.WHITE);
-		c.drawRect(new Rect(0, 0, width, height), p);
+		c.rotate(315, intermediate.getWidth()/2, intermediate.getHeight()/2);
+		
+		int imageWidth = oldImage.getWidth();
+		int imageHeight = oldImage.getHeight();
+		c.drawRect(new Rect(0, 0, imageWidth, imageHeight), p);
 		p.setColor(Color.BLACK);	
 
 		// Iterate over the gray BufferedImage for each grid to calculate the black intensity, then write this dot to halftone
-		for(int h = 0; h + gridSize <= height; h += gridSize)
+		for(int h = 0; h + gridSize <= imageHeight; h += gridSize)
 		{
-			for(int w = 0; w + gridSize <= width; w += gridSize)
+			for(int w = 0; w + gridSize <= imageWidth; w += gridSize)
 			{
 				int calc = 0;
 				
@@ -145,5 +186,14 @@ public class Halftone extends FilteredImage {
 				}
 			}
 		}
+//		
+//		int[] pixels = new int[image.getWidth()*image.getHeight()];
+//		intermediate.getPixels(pixels, 0, oldImage.getWidth(), intermediate.getWidth() - (image.getWidth()/2), intermediate.getHeight() - (image.getHeight()/2), image.getWidth(), image.getHeight());
+//		
+//		Canvas canvas = new Canvas(image);
+//		p.setColor(Color.WHITE);
+//		canvas.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
+//		c.drawBitmap(pixels, 0, stride, x, y, imageWidth, imageHeight, hasAlpha, paint)
+//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
 	}
 }

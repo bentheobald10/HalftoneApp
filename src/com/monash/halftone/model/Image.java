@@ -138,34 +138,25 @@ public class Image {
 	public Bitmap getImage(){
 		// Get the FilteredImage object
 		Bitmap image = filteredImage.getImage();
+		Bitmap returnImage = Bitmap.createBitmap(image.getWidth(), image.getHeight() + 50, Config.ARGB_8888);
 		
-		// Calculate the size of the Bitmap to use for the new bitmap so that the grid can be rotated without image loss
-		int size =  (int) Math.ceil( Math.hypot(((float) image.getWidth()/2), ((float) image.getHeight()/2)) );
-		Bitmap returnImage = Bitmap.createBitmap(size*2, (size*2) + 50, Config.ARGB_8888);
 		Canvas canvas = new Canvas(returnImage);
 		Position pos = textCaption.getPos();
 		Paint p = new Paint();
-		p.setColor(Color.RED);
-		
-		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
 		
 		// Set default text size to 50 pixels
 		p.setTextSize(50); p.setTypeface(Typeface.DEFAULT); p.setColor(Color.BLACK);
-
-//		canvas.rotate(45, image.getWidth()/2, image.getHeight()/2);
-
-//		canvas.rotate(45, size, size);
 		
 		// Switch to determine where the caption is placed. Image is placed in the middle of the canvas
 		switch(pos)
 		{
 			case ABOVE:
-				canvas.drawBitmap(image, size-(image.getWidth()/2), size-(image.getHeight()/2) + 50, p);
-				canvas.drawText(textCaption.getText(),size-(image.getWidth()/2), size-(image.getHeight()/2) + 50,p);
+				canvas.drawBitmap(image, 0, 50, p);
+				canvas.drawText(textCaption.getText(), 0, 50, p);
 				break;
 			case BELOW:
-				canvas.drawBitmap(image, size-(image.getWidth()/2), size-(image.getHeight()/2), p);
-				canvas.drawText(textCaption.getText(),size-(image.getWidth()/2), size-(image.getHeight()/2) + image.getHeight() + 50,p);
+				canvas.drawBitmap(image, 0, 0, p);
+				canvas.drawText(textCaption.getText(), 0, image.getHeight() + 50, p);
 				break;
 			case NONE:
 				return image;
