@@ -24,7 +24,13 @@ import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Caption.Position;
 import com.monash.halftone.view.CaptionFragment.CaptionDialogListener;
 
-
+/**
+ * Similar to the Captions Fragment class, the Halftone Options Fragment extends the DialogFragment class as an implementation
+ * of an alert dialog.
+ * It allows the user to specify the grid angle, as well as the shape to use during the Halftone process.
+ * @author Jake Spicer and Ben Theobald
+ *
+ */
 public class HalftoneOptionsFragment extends DialogFragment {
 	public interface HalftoneOptionsDialogListener {
 		public void onHalfOpDialogPositiveClick(DialogFragment dialog);
@@ -46,22 +52,23 @@ public class HalftoneOptionsFragment extends DialogFragment {
 
 	}
 
+	/**
+	 * This executes when the HalftoneOptionsFragment begins.
+	 */
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-		final CharSequence[] items = {"Circles", "Diamonds", "Rectangles"};
+		final CharSequence[] items = {"Circles", "Diamonds", "Rectangles"}; //Strings to use for radio buttons
 
 		TextView text = new TextView(getActivity());
 		text.setText("Choose which shape to Halftone your image with");
-		//		builder.setView(text);
 		if(hShape == null)
 			hShape = Halftone.HalftoneShape.CIRCLE;
 
 		builder.setTitle(R.string.halfOp)
-		//		.setView(text)
-		.setSingleChoiceItems(items, hShape.getId(), new DialogInterface.OnClickListener() {
+		.setSingleChoiceItems(items, hShape.getId(), new DialogInterface.OnClickListener() {	//Set radio buttons, and capture result.
 			public void onClick(DialogInterface dialog, int which) {
 				if ("Circles".compareTo(items[which].toString()) == 0){
 					hShape = Halftone.HalftoneShape.CIRCLE;
@@ -83,13 +90,13 @@ public class HalftoneOptionsFragment extends DialogFragment {
 			}
 		});
 
-
-
-
-
 		// Create the AlertDialog object and return it
 		return builder.create();
 	} 
+	/**
+	 * Returns which shape was chosen
+	 * @return The Halftone Shape 
+	 */
 	public HalftoneShape getHShape(){
 		return hShape;
 	}
