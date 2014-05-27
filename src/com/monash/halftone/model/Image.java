@@ -76,7 +76,7 @@ public class Image {
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape);
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape, 45); //TODO Create a slider for this
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());

@@ -21,7 +21,8 @@ public class Halftone extends FilteredImage {
 	private int gridSize;
 	private float MAX_RADIUS;
 	private HalftoneShape halftoneShape;
-	
+	private int rotationDegrees;
+
 	/**
 	 * An enum class that defines the shape to use for the Halftone filter
 	 * 
@@ -33,12 +34,12 @@ public class Halftone extends FilteredImage {
 		CIRCLE(0),
 		DIAMOND(1),
 		RECTANGLE(2);
-		
+
 		/**
 		 * Id of the shape used
 		 */
 		private int id;
-		
+
 		/**
 		 * Sets the Halftone shape to use, and sets the Id
 		 * 
@@ -48,7 +49,7 @@ public class Halftone extends FilteredImage {
 		{
 			this.id = id;
 		}
-		
+
 		/**
 		 * Gets the Id of the HalftoneShape that is selected
 		 * 		
@@ -59,7 +60,7 @@ public class Halftone extends FilteredImage {
 			return this.id;
 		}
 	};
-	
+
 	/**
 	 * The constructor of the Halftone class that takes the Uri of the image to apply the filter to, the gridsize for the shape and the HalfotneSHape to use for the filter
 	 * 
@@ -67,70 +68,90 @@ public class Halftone extends FilteredImage {
 	 * @param gridSize The size of the halftone grid to use
 	 * @param halftoneShape The halftoneShape to use for the filter
 	 */
-	public Halftone(Uri file, int gridSize, HalftoneShape halftoneShape){
+	public Halftone(Uri file, int gridSize, HalftoneShape halftoneShape, int rotationDegrees){
 		uri = file;
 		this.gridSize = gridSize;
 		this.halftoneShape = halftoneShape;
-		
+		this.rotationDegrees = rotationDegrees;
+
 		// Read in the image as a Bitmap and get its width/ height
 		Bitmap oldImage = BitmapFactory.decodeFile(uri.toString());
 		width = oldImage.getWidth();
 		height = oldImage.getHeight();
 		MAX_RADIUS = (float) Math.hypot(((float) this.gridSize/2), ((float) this.gridSize/2)); // Calculate the maximum radius for the gridsize using Pythagorus
-		
-		// Calculate the size of the Bitmap to use for the new bitmap so that the grid can be rotated without image loss
-		int size =  (int) Math.ceil( Math.hypot(((float) oldImage.getWidth()/2), ((float) oldImage.getHeight()/2)) );
-		Bitmap returnImage = Bitmap.createBitmap(size*2, (size*2), Config.ARGB_8888);
-		
-		// Create Bitmap for the image and run the convert() to make it halftoned
-//		image = Bitmap.createBitmap( ( width - ( width%gridSize ) ), ( height - ( height%gridSize ) ), Config.ARGB_8888 );
-//		image = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		image = Bitmap.createBitmap(returnImage.getWidth(), returnImage.getHeight(), Config.ARGB_8888);
-		
-		Paint p = new Paint();
-		Canvas canvas = new Canvas(returnImage);
-		p.setColor(Color.WHITE);
-		canvas.drawRect(0, 0, returnImage.getWidth(), returnImage.getHeight(), p);
-		p.setColor(Color.BLACK);
-		
-		canvas.save();
 
-		// Draw the old image on the new Bitmap in the center, then rotate 45 degrees
-		canvas.rotate(45, returnImage.getWidth()/2, returnImage.getHeight()/2);
-		canvas.drawBitmap(oldImage, size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), p);
-		
-		// Convert the image to halftone
-		convert( returnImage);
-//		
-//		Canvas c = new Canvas(image);
-//		p.setColor(Color.WHITE);
-//		c.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
-//		c.rotate(45, image.getWidth()/2, image.getHeight()/2);
-//		c.drawBitmap(image, 0, 0, p);
-		
+		image = Bitmap.createBitmap(oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
+
+		convert(oldImage);
+
+		//		
+		//		Canvas c = new Canvas(image);
+		//		p.setColor(Color.WHITE);
+		//		c.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
+		//		c.rotate(45, image.getWidth()/2, image.getHeight()/2);
+		//		c.drawBitmap(image, 0, 0, p);
+
 		// Restore the orientation and get the pixels changed
-//		canvas.restore();
-//		int[] pixels = new int[oldImage.getWidth()*oldImage.getHeight()];
-//		
-//		returnImage.getPixels(pixels, 0, oldImage.getWidth(), size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), oldImage.getWidth(), oldImage.getHeight());
-		
-//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
-		
-//		image = Bitmap.createBitmap(returnImage);
+		//		canvas.restore();
+		//		int[] pixels = new int[oldImage.getWidth()*oldImage.getHeight()];
+		//		
+		//		returnImage.getPixels(pixels, 0, oldImage.getWidth(), size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), oldImage.getWidth(), oldImage.getHeight());
+
+		//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
+
+		//		image = Bitmap.createBitmap(returnImage);
 	}
 
 	/**
 	 * Converts the passed Bitmap image to a Halftone Bitmap image
 	 */
 	@Override
-	protected void convert(Bitmap oldImage) {
-		Bitmap intermediate = Bitmap.createBitmap(oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
+	protected void convert(Bitmap oldImage)
+	{
+		// Calculate the size of the Bitmap to use for the new bitmap so that the grid can be rotated without image loss
+		int size =  (int) Math.ceil( Math.hypot(((float) oldImage.getWidth()/2), ((float) oldImage.getHeight()/2)) );
+		Bitmap newImage = Bitmap.createBitmap(size*2, (size*2), Config.ARGB_8888);
+		Bitmap angledImage = Bitmap.createBitmap(size*2, (size*2), Config.ARGB_8888);
+
+		// Create a Canvas and Paint to add a white rectangle to newImage
+		Paint p = new Paint();
+		Canvas canvas = new Canvas(newImage);
+		p.setColor(Color.WHITE);
+		canvas.drawRect(0, 0, newImage.getWidth(), newImage.getHeight(), p);
+		p.setColor(Color.BLACK);
+
+		canvas.save();
+
+		// Rotate the image and then draw the old image on the new Bitmap in the center
+		canvas.rotate(rotationDegrees, newImage.getWidth()/2, newImage.getHeight()/2);
+		canvas.drawBitmap(oldImage, size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), p);
+
+		// Convert the image to halftone
+		convert( newImage, angledImage);
 		
-		Canvas c = new Canvas(image);	// Create canvas from Bitmap
+		// Create a canvas for image, crop the angled image to remove whitespace and draw the resulting Bitmap to image
+		canvas = new Canvas(image);
+		Bitmap temp = Bitmap.createBitmap(angledImage, angledImage.getWidth()/2 - (width/2), angledImage.getHeight()/2 - (height/2), angledImage.getWidth()/2 + (width/2), angledImage.getHeight()/2 + (height/2));
+		canvas.drawBitmap(temp, 0, 0, p);
+//		
+//		Log.i("halftone", "w " + image.getWidth() + " " + temp.getWidth() + " h " + image.getHeight() + " " + temp.getHeight());
+	}
+
+	/**
+	 * Reads the pixels data from the image to halftone, and draws the shapes to the image passed in.
+	 * It rotates the output image 315  degrees to the original orientation before drawing the shapes.
+	 * 
+	 * @param oldImage Image who's pixels are read to be halftoned
+	 * @param newImage Image to write the halftone shapes to to create a halftone image
+	 */
+	private void convert(Bitmap oldImage, Bitmap newImage)
+	{
+		Canvas c = new Canvas(newImage);	// Create canvas from Bitmap
 		Paint p = new Paint();			// Create a new Paint
 		p.setColor(Color.WHITE);
-		c.rotate(315, intermediate.getWidth()/2, intermediate.getHeight()/2);
+		c.rotate(315, newImage.getWidth()/2, newImage.getHeight()/2); // Rotate the image to the original orientation
 		
+		// Draw a WHite rectangle background
 		int imageWidth = oldImage.getWidth();
 		int imageHeight = oldImage.getHeight();
 		c.drawRect(new Rect(0, 0, imageWidth, imageHeight), p);
@@ -142,7 +163,7 @@ public class Halftone extends FilteredImage {
 			for(int w = 0; w + gridSize <= imageWidth; w += gridSize)
 			{
 				int calc = 0;
-				
+
 				// Iterate over the image for the grid, summing up the rgb values
 				for( int gw = w; gw < w + gridSize; gw++ )
 				{
@@ -152,7 +173,7 @@ public class Halftone extends FilteredImage {
 						calc = calc + (Color.red(colour) + Color.green(colour) + Color.blue(colour))/3 ;
 					}
 				}
-				
+
 				// Get an average pixel intensity for the read in grid
 				calc /= (gridSize * gridSize);
 				float grayValue = 255 - calc;
@@ -161,7 +182,7 @@ public class Halftone extends FilteredImage {
 				int midPointWidth = (w + w + gridSize)/2;
 				int midPointHeight = (h + h + gridSize)/2;
 				float grayIntensity;
-				
+
 				// Switch on the HalftoneShape to determine what type of shape to draw
 				switch(halftoneShape)
 				{
@@ -173,7 +194,7 @@ public class Halftone extends FilteredImage {
 				case RECTANGLE:
 					// Draw a rectangle to the halftone image
 					grayIntensity = grayValue/( (float) 256/(gridSize/2) );
-//					Log.i("halftone", Integer.toString(w) + " " + Integer.toString(h) + " " + Integer.toString(midPointWidth) + " " + Integer.toString(midPointHeight) + " " + Float.toString(grayIntensity));
+					//					Log.i("halftone", Integer.toString(w) + " " + Integer.toString(h) + " " + Integer.toString(midPointWidth) + " " + Integer.toString(midPointHeight) + " " + Float.toString(grayIntensity));
 					c.drawRect(midPointWidth - grayIntensity, midPointHeight - (grayIntensity/2), midPointWidth +  grayIntensity, midPointHeight +  (grayIntensity/2), p);
 					break;
 				case DIAMOND:
@@ -186,14 +207,5 @@ public class Halftone extends FilteredImage {
 				}
 			}
 		}
-//		
-//		int[] pixels = new int[image.getWidth()*image.getHeight()];
-//		intermediate.getPixels(pixels, 0, oldImage.getWidth(), intermediate.getWidth() - (image.getWidth()/2), intermediate.getHeight() - (image.getHeight()/2), image.getWidth(), image.getHeight());
-//		
-//		Canvas canvas = new Canvas(image);
-//		p.setColor(Color.WHITE);
-//		canvas.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
-//		c.drawBitmap(pixels, 0, stride, x, y, imageWidth, imageHeight, hasAlpha, paint)
-//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
 	}
 }
