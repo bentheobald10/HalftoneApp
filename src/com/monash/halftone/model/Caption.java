@@ -10,7 +10,7 @@ public class Caption {
 	private String text;
 	
 	public Caption(String text){
-		this.text = text;
+		setText(text);
 		pos = Position.NONE;
 	}
 
@@ -27,6 +27,11 @@ public class Caption {
 	}
 
 	public void setText(String text) {
+		if(text.length() > 42 )
+		{
+			throw new IllegalArgumentException("Caption text must be less than 42 characters");
+		}
+		
 		this.text = text;
 	}
 }

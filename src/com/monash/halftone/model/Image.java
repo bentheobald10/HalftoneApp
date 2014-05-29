@@ -58,7 +58,7 @@ public class Image {
 	 * Sets the grid Size for the Halftone Image
 	 * @param gridsize
 	 */
-	public void setGridsize(int gridsize){
+	public void setGridsize(int gridsize){		
 		this.gridSize = gridsize;	
 	}
 	

@@ -60,6 +60,10 @@ public class Halftone extends FilteredImage {
 			return this.id;
 		}
 	};
+	
+	public Halftone()
+	{
+	}
 
 	/**
 	 * The constructor of the Halftone class that takes the Uri of the image to apply the filter to, the gridsize for the shape and the HalfotneSHape to use for the filter
@@ -72,7 +76,7 @@ public class Halftone extends FilteredImage {
 		uri = file;
 		this.gridSize = gridSize;
 		this.halftoneShape = halftoneShape;
-		this.rotationDegrees = rotationDegrees;
+		setRotationDegrees(rotationDegrees);
 
 		// Read in the image as a Bitmap and get its width/ height
 		Bitmap oldImage = BitmapFactory.decodeFile(uri.toString());
@@ -83,23 +87,6 @@ public class Halftone extends FilteredImage {
 		image = Bitmap.createBitmap(oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
 
 		convert(oldImage);
-
-		//		
-		//		Canvas c = new Canvas(image);
-		//		p.setColor(Color.WHITE);
-		//		c.drawRect(new Rect(0, 0, image.getWidth(), image.getHeight()), p);
-		//		c.rotate(45, image.getWidth()/2, image.getHeight()/2);
-		//		c.drawBitmap(image, 0, 0, p);
-
-		// Restore the orientation and get the pixels changed
-		//		canvas.restore();
-		//		int[] pixels = new int[oldImage.getWidth()*oldImage.getHeight()];
-		//		
-		//		returnImage.getPixels(pixels, 0, oldImage.getWidth(), size - (oldImage.getWidth()/2), size - (oldImage.getHeight()/2), oldImage.getWidth(), oldImage.getHeight());
-
-		//		image =  Bitmap.createBitmap(pixels, oldImage.getWidth(), oldImage.getHeight(), Config.ARGB_8888);
-
-		//		image = Bitmap.createBitmap(returnImage);
 	}
 
 	/**
@@ -133,8 +120,6 @@ public class Halftone extends FilteredImage {
 		canvas = new Canvas(image);
 		Bitmap temp = Bitmap.createBitmap(angledImage, angledImage.getWidth()/2 - (width/2), angledImage.getHeight()/2 - (height/2), angledImage.getWidth()/2 + (width/2), angledImage.getHeight()/2 + (height/2));
 		canvas.drawBitmap(temp, 0, 0, p);
-//		
-//		Log.i("halftone", "w " + image.getWidth() + " " + temp.getWidth() + " h " + image.getHeight() + " " + temp.getHeight());
 	}
 
 	/**
@@ -207,5 +192,52 @@ public class Halftone extends FilteredImage {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Gets the rotation angle in degrees
+	 * 
+	 * @return The rotation angle in degrees
+	 */
+	public int getRotationDegrees() {
+		return rotationDegrees;
+	}
+
+	/**
+	 * Sets the rotation angle for the halftone grid.
+	 * This angle must be between 0 and 45.
+	 * 
+	 * @param rotationDegrees The rotation to set for the halftone grid
+	 */
+	public void setRotationDegrees(int rotationDegrees) {
+		if(rotationDegrees < 0 || rotationDegrees > 45)
+		{
+			throw new IllegalArgumentException(rotationDegrees + " Rotation angle must be between 0 and 45");
+		}
+		
+		this.rotationDegrees = rotationDegrees;
+	}
+	/**
+	 * Gets the halftone grid size
+	 * 
+	 * @return The Halftone grid size
+	 */
+	public int getGridSize() {
+		return gridSize;
+	}
+
+	/**
+	 * Set the Halftone gridsize.
+	 * The gridsize must be between 3 and 15.
+	 * 
+	 * @param gridSize The Halftone gridsize to set for the image
+	 */
+	public void setGridSize(int gridSize) {
+		if(gridSize < 3 || gridSize > 15 )
+		{
+			throw new IllegalArgumentException(gridSize + " Grid Size must be between 3 and 15");
+		}
+		
+		this.gridSize = gridSize;
 	}
 }
