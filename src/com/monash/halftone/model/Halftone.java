@@ -60,6 +60,9 @@ public class Halftone extends FilteredImage {
 		}
 	};
 	
+	/**
+	* Generic Constructor for Halftone
+	*/
 	public Halftone()
 	{
 	}
@@ -133,7 +136,7 @@ public class Halftone extends FilteredImage {
 		Canvas c = new Canvas(newImage);	// Create canvas from Bitmap
 		Paint p = new Paint();			// Create a new Paint
 		p.setColor(Color.WHITE);
-		c.rotate(315, newImage.getWidth()/2, newImage.getHeight()/2); // Rotate the image to the original orientation
+		c.rotate(360 - rotationDegrees, newImage.getWidth()/2, newImage.getHeight()/2); // Rotate the image to the original orientation
 		
 		// Draw a WHite rectangle background
 		int imageWidth = oldImage.getWidth();

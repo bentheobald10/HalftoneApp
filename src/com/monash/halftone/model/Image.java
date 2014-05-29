@@ -37,6 +37,7 @@ public class Image {
 	private HalftoneShape halftoneShape;
 	private Caption textCaption;
 	private int gridSize;
+	private int rotationAngle;
 	private String filename;
 	
 	/**
@@ -50,6 +51,7 @@ public class Image {
 	public Image(Uri uri, String filename, Filter filter, int gridSize){
 		originalImage = new NoFilter(uri);
 		this.gridSize = gridSize;
+		rotationAngle = 0;
 		halftoneShape = Halftone.HalftoneShape.CIRCLE;
 		setFilename(filename);
 		textCaption = new Caption("");
@@ -76,7 +78,7 @@ public class Image {
 			filteredImage = new NoFilter(originalImage.getUri());
 			break;
 		case HALFTONE:
-			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape, 45); //TODO Create a slider for this
+			filteredImage = new Halftone(originalImage.getUri() , gridSize, halftoneShape, rotationAngle);
 			break;
 		case GRAYSCALE:
 			filteredImage = new Grayscale(originalImage.getUri());
@@ -128,6 +130,11 @@ public class Image {
 	public void setHalftoneShape(Halftone.HalftoneShape shape)
 	{
 		halftoneShape = shape;
+	}
+	
+	public void setRotationAngle(int rotation)
+	{
+		rotationAngle = rotation;
 	}
 	
 	/**

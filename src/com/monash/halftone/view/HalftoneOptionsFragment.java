@@ -4,25 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.NumberPicker;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.monash.halftone.R;
-import com.monash.halftone.model.Caption;
 import com.monash.halftone.model.Halftone;
 import com.monash.halftone.model.Halftone.HalftoneShape;
-import com.monash.halftone.model.Image;
-import com.monash.halftone.model.Caption.Position;
-import com.monash.halftone.view.CaptionFragment.CaptionDialogListener;
 
 /**
  * Similar to the Captions Fragment class, the Halftone Options Fragment extends the DialogFragment class as an implementation
@@ -37,9 +30,10 @@ public class HalftoneOptionsFragment extends DialogFragment {
 		public void onHalfOpDialogNegativeClick(DialogFragment dialog);
 	}
 
-	HalftoneOptionsDialogListener mListener;
-	static Halftone.HalftoneShape hShape;
-	static int rotationDegrees;
+	private HalftoneOptionsDialogListener mListener;
+	private static Halftone.HalftoneShape hShape;
+	private SeekBar seek;
+//	private TextView tvRotation;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -64,11 +58,15 @@ public class HalftoneOptionsFragment extends DialogFragment {
 		final CharSequence[] items = {"Circles", "Diamonds", "Rectangles"}; //Strings to use for radio buttons
 
 		TextView text = new TextView(getActivity());
-		text.setText("Choose which shape to Halftone your image with");
+		text.setText("Choose which shape to Halftone your image with");		
+		
 		if(hShape == null)
 			hShape = Halftone.HalftoneShape.CIRCLE;
-		SeekBar seek = new SeekBar(getActivity());
+		
+		seek = new SeekBar(getActivity());
+		seek.setMax(45);		
 		builder.setView(seek);
+		
 		builder.setTitle(R.string.halfOp)
 		.setSingleChoiceItems(items, hShape.getId(), new DialogInterface.OnClickListener() {	//Set radio buttons, and capture result.
 			public void onClick(DialogInterface dialog, int which) {
@@ -101,5 +99,10 @@ public class HalftoneOptionsFragment extends DialogFragment {
 	 */
 	public HalftoneShape getHShape(){
 		return hShape;
+	}
+	
+	public int getRotationAngle()
+	{
+		return seek.getProgress();
 	}
 }

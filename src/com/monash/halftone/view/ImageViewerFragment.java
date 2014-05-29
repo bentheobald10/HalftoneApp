@@ -36,6 +36,7 @@ import com.monash.halftone.model.Image.Filter;
 
 public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener{
 	ImageView ivMain;
+	TextView tvRotation;
 	Image image;
 	Uri uri;
 	Button bShare, bText, bSave, bHalfOptions;
@@ -48,7 +49,7 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
 
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
-
+		tvRotation = (TextView) view.findViewById(R.id.tvRotation);
 		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
 		rgFilter.setOnCheckedChangeListener(this);
 
@@ -136,10 +137,14 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 	}
 	public void onHalfOpDialogPositiveClick(DialogFragment dialog){
-		HalftoneOptionsFragment hf  = (HalftoneOptionsFragment)dialog;
-		Halftone.HalftoneShape hShape = hf.getHShape();
+		HalftoneOptionsFragment halftoneFragmentDialog  = (HalftoneOptionsFragment)dialog;
+		Halftone.HalftoneShape hShape = halftoneFragmentDialog.getHShape();
+		int rotation = halftoneFragmentDialog.getRotationAngle();
 		
+		image.setRotationAngle(rotation);
 		image.setHalftoneShape(hShape);
+		
+		tvRotation.setText("Rotation Angle: " +  rotation);
 	}
 	public void onHalfOpDialogNegativeClick(DialogFragment dialog){
 		//do nothing

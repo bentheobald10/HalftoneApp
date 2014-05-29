@@ -111,6 +111,13 @@
                     android:layout_height="wrap_content"
                     android:text="Negative" />
             </RadioGroup>
+            
+            <TextView
+            android:id="@+id/tvRotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Rotation Angle: 0" />
         </LinearLayout>
 
     </LinearLayout>
