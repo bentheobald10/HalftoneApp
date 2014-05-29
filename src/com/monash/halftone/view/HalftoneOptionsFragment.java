@@ -39,6 +39,7 @@ public class HalftoneOptionsFragment extends DialogFragment {
 
 	HalftoneOptionsDialogListener mListener;
 	static Halftone.HalftoneShape hShape;
+	static int rotationDegrees;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -66,7 +67,8 @@ public class HalftoneOptionsFragment extends DialogFragment {
 		text.setText("Choose which shape to Halftone your image with");
 		if(hShape == null)
 			hShape = Halftone.HalftoneShape.CIRCLE;
-
+		SeekBar seek = new SeekBar(getActivity());
+		builder.setView(seek);
 		builder.setTitle(R.string.halfOp)
 		.setSingleChoiceItems(items, hShape.getId(), new DialogInterface.OnClickListener() {	//Set radio buttons, and capture result.
 			public void onClick(DialogInterface dialog, int which) {
