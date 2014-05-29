@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * The Halftone class implements the Halftone filter to the current image.

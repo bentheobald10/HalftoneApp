@@ -5,7 +5,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
+/**
+ * The main activity as well as the main fragment is used for the first splash screen which asks the user to choose a photo
+ * from the gallery, or to take a photo with the camera.
+ * @author Jake Spicer and Ben Theobald
+ *
+ */
 public class MainActivity extends Activity {
 
 	@Override
