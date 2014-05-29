@@ -8,9 +8,17 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.Uri;
-
+/**
+ * The Grayscale class implements the grayscale filter on an image. 
+ * It converts a image into a black and white image.
+ * @author Jake Spicer and Ben Theobald
+ *
+ */
 public class Grayscale extends FilteredImage {
-	
+	/**
+	 * A public constructor that creates a Grayscale filter of an image.
+	 * @param the uri of an image file
+	 */
 	public Grayscale(Uri file){
 		uri = file;
 		Bitmap oldImage = BitmapFactory.decodeFile(uri.toString());
@@ -22,6 +30,9 @@ public class Grayscale extends FilteredImage {
 	}
 	
 	@Override
+	/**
+	 * The inherited convert() method does the filtering process. In this case it makes the image black and white.
+	 */
 	protected void convert(Bitmap oldImage) {
 		Canvas c = new Canvas(image);
 		Paint p = new Paint();

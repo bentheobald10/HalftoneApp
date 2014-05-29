@@ -8,9 +8,16 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
 import android.net.Uri;
-
+/**
+ * The Negative class extends FilteredImage and creates a black and white negative filter over an image.
+ * @author Jake Spicer and Ben Theobald
+ *
+ */
 public class Negative extends FilteredImage {
-	
+	/**
+	 * The Negative Constructor that creates a Negative filter.
+	 * @param uri of an image file
+	 */
 	public Negative(Uri uri)
 	{
 		this.uri = uri;
@@ -23,6 +30,9 @@ public class Negative extends FilteredImage {
 	}
 
 	@Override
+	/**
+	 * The inherited convert() method from FilteredImage, the process of creating a negative image is done here.
+	 */
 	protected void convert(Bitmap oldImage)
 	{		
 		Canvas c = new Canvas(image);

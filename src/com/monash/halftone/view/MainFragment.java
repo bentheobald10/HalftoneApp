@@ -23,17 +23,23 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.monash.halftone.R;
-
+/**
+ * The main fragment, along with it's partner main activity, inflates the options for the first menu, which allows the user to choose
+ * to use an image from the gallery, or from the camera.
+ * @author Jake Spicer and Ben Theobald
+ *
+ */
 public class MainFragment extends Fragment implements OnClickListener{
 	Button bCamera, bLoadGallery;
 	static final int REQUEST_TAKE_PHOTO = 1;
 	static final int REQUEST_GALLERY_PHOTO = 2;
 	static File photoFile = null;
+	String mCurrentPhotoPath;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.main_menu_fragment, container, false);
-
+		//Load the two buttons, and set listeners
 		bLoadGallery = (Button) view.findViewById(R.id.bGallery);
 		bLoadGallery.setOnClickListener( this);
 
@@ -47,10 +53,11 @@ public class MainFragment extends Fragment implements OnClickListener{
 	public void onClick(View v) {
 		switch(v.getId())
 		{
+		//create intent for Android Gallery
 		case R.id.bGallery:
 			startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), REQUEST_GALLERY_PHOTO);
 			break;
-
+		//create intent for Android Camera
 		case R.id.bPhoto:
 			// create Intent to take a picture and return control to the calling application
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -100,19 +107,18 @@ public class MainFragment extends Fragment implements OnClickListener{
 		}
 	}
 
-	private void setUp(){
-
-	}
-
-	private void takePhoto(){
-
-	}
-	String mCurrentPhotoPath;
+	/**
+	 * A private method for creating an image file placeholder, so that when the camera app captures a photo, it places it 
+	 * into and image file.
+	 * @return image file placeholder
+	 * @throws IOException
+	 */
 	private File createImageFile() throws IOException {
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String imageFileName = "PNG_" + timeStamp + "_";
 		File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		// Create image file
 		File image = File.createTempFile(imageFileName,".png", storageDir);
 
 		// Save a file: path for use with ACTION_VIEW intents
