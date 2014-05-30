@@ -9,7 +9,12 @@ import android.widget.ImageView;
 
 import com.monash.halftone.R;
 import com.monash.halftone.model.Image;
-
+/**
+ * The ImageViewerActivity class is the activity connected with the ImageViewerFragment. 
+ * The majority of the logic behind the app is handled by ImageViewerFragment, therefore this is a slim class.
+ * The ImageViewerActivity passes along the return values from the Caption and Halftone Dialogs, allowing the return values to be used.
+ * @author Jake Spicer and Ben Theobald
+ */
 public class ImageViewerActivity extends Activity implements CaptionFragment.CaptionDialogListener, HalftoneOptionsFragment.HalftoneOptionsDialogListener  {
 	ImageViewerFragment imageFragment;
 
@@ -28,8 +33,6 @@ public class ImageViewerActivity extends Activity implements CaptionFragment.Cap
 
 	public void onDialogPositiveClick(DialogFragment dialog) {
 		imageFragment.onCapDialogPositiveClick(dialog);
-
-
 	}
 
 	public void onDialogNegativeClick(DialogFragment dialog) {

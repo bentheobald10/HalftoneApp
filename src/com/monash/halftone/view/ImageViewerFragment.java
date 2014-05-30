@@ -33,7 +33,10 @@ import com.monash.halftone.R;
 import com.monash.halftone.model.Halftone;
 import com.monash.halftone.model.Image;
 import com.monash.halftone.model.Image.Filter;
-
+/**
+ * The ImageViewerFragment class handles the majority of the app logic, hence the largness of it. It handles every user story.
+ * @author Jake Spicer and Ben Theobald
+ */
 public class ImageViewerFragment extends Fragment implements OnClickListener, OnCheckedChangeListener{
 	ImageView ivMain;
 	TextView tvRotation;
@@ -47,7 +50,8 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.image_viewer_fragment, container, false);
-
+		
+		//Connect reference variables to several views
 		ivMain = (ImageView) view.findViewById(R.id.ivImage);
 		tvRotation = (TextView) view.findViewById(R.id.tvRotation);
 		rgFilter = (RadioGroup) view.findViewById(R.id.rgFilters);
@@ -55,7 +59,6 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 		String uriString = getActivity().getIntent().getExtras().getString("image");
 		uri = Uri.parse(uriString);
-		Log.d("String", uriString);
 
 		//set-up Image variable
 		image = new Image(uri, uriString.toString(), Filter.NONE, 10);
@@ -64,9 +67,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Add Image to the ImageView
 		ivMain.setImageBitmap( image.getImage());
 
+		//Adds name above image if possible
 		addNameView(view);
 
-		// Add button On-Click Listeners
+		// Add On-Click Listeners for buttons
 		bShare = (Button) view.findViewById(R.id.bShare);
 		bShare.setOnClickListener(this);
 		bSave = (Button) view.findViewById(R.id.bSave);
@@ -78,7 +82,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 
 		return view;
 	}
-
+	/**
+	 * This adds a textview above the image with the name of the image, if possible
+	 * @param view layout
+	 */
 	private void addNameView(View view) {
 		TextView imgName = (TextView) view.findViewById(R.id.imageNameTextView);
 		String[] splitResult = (String[])image.getFilename().split("/");
@@ -89,6 +96,9 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	}
 
 	@Override
+	/**
+	 * Switch statement which triggers different methods depending on which button was pressed
+	 */
 	public void onClick(View v) {
 		switch(v.getId())
 		{
@@ -106,7 +116,9 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			break;
 		}
 	}
-
+	/**
+	 * This creates and shows the Alert Dialog CaptionFragment, which allows the user to add a caption to an image.
+	 */
 	private void addCaption() {
 		CaptionFragment cf = new CaptionFragment();
 		cf.show(getFragmentManager(), "caption");
@@ -130,12 +142,18 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		//do nothing
 	}
 
-
+	/**
+	 * Creates and shows the Alert Dialog HaldtoneOptionsFragment
+	 */
 	private void changeHalftoning() {
 		HalftoneOptionsFragment hf = new HalftoneOptionsFragment();
 		hf.show(getFragmentManager(), "options");
 
 	}
+	/**
+	 * Halftone return methods
+	 * @param dialog
+	 */
 	public void onHalfOpDialogPositiveClick(DialogFragment dialog){
 		HalftoneOptionsFragment halftoneFragmentDialog  = (HalftoneOptionsFragment)dialog;
 		Halftone.HalftoneShape hShape = halftoneFragmentDialog.getHShape();
@@ -151,6 +169,9 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 	}
 
 	@Override
+	/**
+	 * This method checks which Image Filter radio button has been pressed, and triggers the corresponding filtering method
+	 */
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		switch(checkedId)
 		{
@@ -172,12 +193,13 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 			break;
 		}
 	}
-
+	/**
+	 * This is the method used to save an image. 
+	 * @param layout view
+	 * @return the file name of the saved file
+	 */
 	private String saveImage(View v){
 		File file;
-		//String filename = image.getFilename();
-		//	if(filename == null)
-		//		Log.d("SaveImage", "filename is null");
 		//create filename
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String filename = "PNG_" + timeStamp + "_";
@@ -186,15 +208,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) 
 		{
-			Log.d("Storage", "External");
-			//Toast.makeText(getActivity(), "SD Card", Toast.LENGTH_SHORT).show();
 			File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Newspaperfy"); //"Newspaperfy" should be changed to name of application
 			dir.mkdirs();
 			file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Newspaperfy", filename + ".jpg");
 
-			// Get Bitmap from Drawables, then write image to file through fileoutputstream
-			//			Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
-			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			try {
 				FileOutputStream fo = new FileOutputStream(file);
 				image.getImage().compress(Bitmap.CompressFormat.JPEG, 100, fo);
@@ -205,7 +222,6 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		else // Use Internal Storage
 		{ 				
 			Toast.makeText(getActivity(), "Internal Storage", Toast.LENGTH_SHORT).show();
-			//			Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.andoridjellybeanlogo);
 			file = new File(getView().getContext().getFilesDir() + File.separator + filename + ".jpg");
 
 			try {
@@ -219,7 +235,10 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		addNameView(v);
 		return file.getAbsolutePath();
 	}
-
+	/**
+	 * This creates an intent, and shares the image to any application that can use it.
+	 * @param layout view
+	 */
 	private void shareImage(View v){
 		// Create File from image file path
 		File file = new File(saveImage(v));
@@ -234,11 +253,17 @@ public class ImageViewerFragment extends Fragment implements OnClickListener, On
 		// Start Activity with a chooser menu
 		startActivity(Intent.createChooser(shareIntent, "Share image"));
 	}
-
+	/**
+	 * Executes the AsyncFilter used for each filter
+	 * @param filter
+	 */
 	private void applyImageFilter(Image.Filter filter){
 		new AsyncFilter(filter).execute();
 	}
-
+	/**
+	 * Creates a new Async Task which executes the filtering methods on a new process
+	 * @author Jake Spicer and Ben Theobald
+	 */
 	public class AsyncFilter extends AsyncTask<String, Integer, Void>
 	{
 		private Filter filter;
